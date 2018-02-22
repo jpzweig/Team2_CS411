@@ -1,0 +1,12 @@
+Story 1: When All Goes Right
+  Background:
+  - I want to trvel to an exotic place with a friend, but I don't know anything about the city in terms of where to go. I want to know some cool restaurants, clubs, hikes, sites, etc.
+  Log In:
+  - I first direct myself to the web application, where I am asked to log in with Instagram credentials. Once my username and password are verified, I am asked to approve this transaction on Instagram's side of things. After this is apprvoed I am directed to the search bar.
+  Search:
+  - I type in a location using city, state, or zipcode, and a list of the people I follow pops up that have used that location tag in an instagram post before (location within a predefined radius).
+  Results:
+  - I can click on each username and find the information that they have on their Instagram profile, as well as see the photos that they took while using the location tag of interest. With this information, I can choose to connect with them or send them a DM to learn more about their experience and what made is special/unique.
+  
+
+
