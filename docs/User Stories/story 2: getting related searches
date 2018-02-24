@@ -1,0 +1,11 @@
+Story 2: Getting Related Searches
+- After loggin in and searching the location, you get all the relevant posts that relates to your search.
+- Once you finished scrolling through all the relevant posts, we suggest the user to click a button to generate related posts.
+- Here are the following steps taken to get the related results:
+    1. the relevant results' usernames 
+    2. Collect all the locations they've visited 
+    3. Return the most common location between all these users' posts
+    OR
+    1. Return other people's serches from previous logins that are close to the location the current user entered
+- View all the related posts in the same manner as the relevant posts.
+- Connect with whoever visited awesome places. 
