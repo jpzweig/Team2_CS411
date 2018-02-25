@@ -1,3 +1,4 @@
+Story 3: handling invalid search terms
 As a user, I want to receive alternative suggestions for a search term that is spelt wrongly, or doesn't exist, or doesn't return any results. This is so that I know what went wrong if I don't get the results I'm looking for. 
 
 1) Misspelt place/city name
