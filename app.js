@@ -16,6 +16,8 @@ var client_id = 'bfe355d57c4948e2a2a535e2c6d5becf'; // Your client id
 var client_secret = '3d8aa7bcb618480eaaf05bbb17551e71'; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
+var access_token = "error";
+
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -30,6 +32,21 @@ var generateRandomString = function(length) {
   }
   return text;
 };
+
+var runSpotify = function() {
+  var search = document.getElementById("search");
+  var options = {
+    url: 'https://api.spotify.com/v1/search?type=track&q=' + search,
+    headers: { 'Authorization': 'Bearer ' + access_token },
+    json: true
+  };
+  console.log(access_token);
+  console.log(options);
+  request.get(options, function(error, response, body) {
+    document.getElementById("result").appendChild(body);
+  });
+};
+
 
 var stateKey = 'spotify_auth_state';
 
@@ -91,17 +108,17 @@ app.get('/callback', function(req, res) {
             refresh_token = body.refresh_token;
 
 
-        var options = {
-          url: 'https://api.spotify.com/v1/me/tracks',
-          headers: { 'Authorization': 'Bearer ' + access_token },
-          json: true
-        };
-        // use the access token to access the Spotify Web API
-        request.get(options, function(error, response, body) {
-          //get the number of tracks I have:
-            console.log(body);
-	    console.log(body["items"][0]["track"]);
-        });
+        // var options = {
+        //   url: 'https://api.spotify.com/v1/me/tracks',
+        //   headers: { 'Authorization': 'Bearer ' + access_token },
+        //   json: true
+        // };
+        // // use the access token to access the Spotify Web API
+        // request.get(options, function(error, response, body) {
+        //   //get the number of tracks I have:
+        //     console.log(body);
+	      //     console.log(body["items"][0]["track"]);
+        // });
 
         // we can also pass the token to the browser to make requests from there
         res.redirect('/#' +
@@ -138,6 +155,51 @@ app.get('/refresh_token', function(req, res) {
       var access_token = body.access_token;
       res.send({
         'access_token': access_token
+      });
+    }
+  });
+});
+
+
+app.get('/search', function(req, res) {
+
+  var authOptions = {
+    url: 'https://accounts.spotify.com/api/token',
+    headers: {
+      'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+    },
+    form: {
+      grant_type: 'client_credentials'
+    },
+    json: true
+  };
+
+  //you always ask for the access token
+  request.post(authOptions, function(error, response, body) {
+    if (!error && response.statusCode === 200) {
+
+      // use the access token to access the Spotify Web API
+      var token = body.access_token;
+      console.log(token);
+      console.log(req.query.q);
+      var options = {
+        url: 'https://api.spotify.com/v1/search?type=track&q=' + req.query.q,
+        headers: { 'Authorization': 'Bearer ' + token },
+        json: true
+      };
+
+      //here is where the search request is made
+      request.get(options, function(error, response, body) {
+        console.log(response);
+        if (!error && response.statusCode === 200) {
+          res.send({
+            'body': body
+          });
+        }else{
+          res.send({
+            'body': 'something went wrong'
+          });
+        }
       });
     }
   });
