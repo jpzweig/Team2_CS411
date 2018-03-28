@@ -180,17 +180,17 @@ app.get('/search', function(req, res) {
 
       // use the access token to access the Spotify Web API
       var token = body.access_token;
-      console.log(token);
-      console.log(req.query.q);
+      // console.log(token);
+      // console.log(req.query.q);
       var options = {
-        url: 'https://api.spotify.com/v1/search?type=track&q=' + req.query.q,
+        url: 'https://api.spotify.com/v1/search?type=track&q=' + req.query.q +'&limit=5',
         headers: { 'Authorization': 'Bearer ' + token },
         json: true
       };
 
       //here is where the search request is made
       request.get(options, function(error, response, body) {
-        console.log(response);
+        //console.log(response);
         if (!error && response.statusCode === 200) {
           res.send({
             'body': body
