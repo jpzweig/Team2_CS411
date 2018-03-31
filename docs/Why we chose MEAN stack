@@ -1,1 +1,5 @@
 Why we chose MEAN stack: 
+- MEAN uses JSON all the way, which matches the data responses we receive from the APIs we're using. This makes it convenient to pass data between layers of the stack.
+- MongoDB, being a non-relational database, fits our needs, as we're not storing much relational/duplicate information.
+- We felt that coding in JavaScript from front to back end will provide flexibility and convenience. 
+- All of us wanted to learn more JavaScript. 
