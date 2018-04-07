@@ -1,0 +1,28 @@
+CS 411 Project - Specifications
+--------
+Team 2
+--------
+
+
+Mongo - database we are using to store profile information, top Spotify songs we are using to generate YouTube playlist.  Two databases in mongo?
+
+Express - exchange information between the database and the web api
+
+Angular - front end interface (js) adds convenient features such as auto refresh, etc
+
+Node - Back end of the web app, DB fetches
+
+----------------
+----------------
+
+TEAM ROLES:
+************
+FRONT END:
+  1. Designing the web-page, loading visuals, formatting the Artists and the playlist for the user - Jacob
+
+  2. Pulling the Artists and the Playlist from mongo in a readable way - Sarah
+
+BACK END:
+  3. After the user authenticates from Spotify, store the user profile information & the top artists from the API call into Mongo. - Nathan
+
+  4. Generate YouTube playlist from top artists and store them in Mongo DB. - Jill / Jacob
