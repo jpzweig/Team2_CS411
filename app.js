@@ -116,11 +116,7 @@ app.get('/callback', function(req, res) {
         // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
           //get the number of tracks I have:
-<<<<<<< HEAD
 	          console.log(body["items"]);
-=======
-            console.log(body);
->>>>>>> 20d2723c901da26c81664dd72b3584079895bed7
         });
 
         // we can also pass the token to the browser to make requests from there
