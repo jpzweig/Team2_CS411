@@ -108,17 +108,16 @@ app.get('/callback', function(req, res) {
             refresh_token = body.refresh_token;
 
 
-        // var options = {
-        //   url: 'https://api.spotify.com/v1/me/tracks',
-        //   headers: { 'Authorization': 'Bearer ' + access_token },
-        //   json: true
-        // };
-        // // use the access token to access the Spotify Web API
-        // request.get(options, function(error, response, body) {
-        //   //get the number of tracks I have:
-        //     console.log(body);
-	      //     console.log(body["items"][0]["track"]);
-        // });
+        var options = {
+          url: 'https://api.spotify.com/v1/me/top/artists',
+          headers: { 'Authorization': 'Bearer ' + access_token },
+          json: true
+        };
+        // use the access token to access the Spotify Web API
+        request.get(options, function(error, response, body) {
+          //get the number of tracks I have:
+	          console.log(body["items"]);
+        });
 
         // we can also pass the token to the browser to make requests from there
         res.redirect('/#' +
