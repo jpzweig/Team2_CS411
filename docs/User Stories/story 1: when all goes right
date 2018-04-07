@@ -1,12 +1,12 @@
 Story 1: When All Goes Right
   Background:
-  - I want to trvel to an exotic place with a friend, but I don't know anything about the city in terms of where to go. I want to know some cool restaurants, clubs, hikes, sites, etc.
+  - I want to make a playlist on YouTube based on what artists I listen to most often and most recently. Thankfully, Spotify stores your "Top Artists" based on these two features.
   Log In:
-  - I first direct myself to the web application, where I am asked to log in with Instagram credentials. Once my username and password are verified, I am asked to approve this transaction on Instagram's side of things. After this is apprvoed I am directed to the search bar.
-  Search:
-  - I type in a location using city, state, or zipcode, and a list of the people I follow pops up that have used that location tag in an instagram post before (location within a predefined radius).
+  - I first must log in by authenticating my Spotify profile, which will be requested right when I access the web application.
+  Playlist Generate:
+  - After I authenticate through Spotify, the back end will get to work by pulling/displaying top artists and then using the top artists to generate a playlist on Youtube.
   Results:
-  - I can click on each username and find the information that they have on their Instagram profile, as well as see the photos that they took while using the location tag of interest. With this information, I can choose to connect with them or send them a DM to learn more about their experience and what made is special/unique.
+  - The playlist will then be displayed for the user as well as the top artists from spotifty.
   
 
 
