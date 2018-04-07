@@ -7,4 +7,4 @@ PROJECT IDEA 1:
 -> ask about linking cheap flights or yelp to this idea?
 
 PROJECT IDEA 2:
-  Based on spotify API and most played artists, recommends concert tickets in your area, and then, using the songkick and ticketmaster and stubhub APIs, we can store the prices in the database and find the cheapest price for the concert that is recommended to you. 
+  Based on spotify API and most played artists, recommends a youtube playlist generated through Mongo. The playlist will be stored and displayed through the user. We plan to use Node.js, angular, express, and mongoDB. First user withh authenticate through spotify and then the top artists will be stored, displayed, and then a playlist will be generated from youtube based on these artists and diplsayed back to the user on the front end.
