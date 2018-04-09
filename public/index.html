@@ -30,10 +30,9 @@
         <a href="/login" class="btn btn-primary">Log in with Spotify</a>
       </div>
       <div id="loggedin">
-        <div id="user-profile">
-        </div>
-        <div id="oauth">
-        </div>
+        <div id="user-profile"></div>
+        <div id="user-playlist"></div>
+        <div id="oauth"></div>
         <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
       </div>
     </div>
@@ -56,6 +55,24 @@
           </dl>
         </div>
       </div>
+    </script>
+
+    <script id="user-playlist-template" type="text/x-handlebars-template">
+      <h1>Your Playlists!</h1>
+      {{#each items}}
+      <div class="media">
+        <div class="pull-left">
+          <img class="media-object" width="150" src="{{images.0.url}}" />
+        </div>
+        <div class="media-body">
+          <dl class="dl-horizontal">
+            <dt>Playlist Name</dt><dd class="clearfix">{{name}}</dd>
+            <dt>Total Tracks</dt><dd>{{tracks.total}}</dd>
+            <dt>Spotify URI</dt><dd><a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd>
+          </dl>
+        </div>
+      </div>
+      {{/each}}
     </script>
 
     <script id="oauth-template" type="text/x-handlebars-template">
@@ -102,6 +119,10 @@
             userProfileTemplate = Handlebars.compile(userProfileSource),
             userProfilePlaceholder = document.getElementById('user-profile');
 
+        var userPlaylistSource = document.getElementById('user-playlist-template').innerHTML,
+            userPlaylistTemplate = Handlebars.compile(userPlaylistSource),
+            userPlaylistPlaceholder = document.getElementById('user-playlist');
+
         var oauthSource = document.getElementById('oauth-template').innerHTML,
             oauthTemplate = Handlebars.compile(oauthSource),
             oauthPlaceholder = document.getElementById('oauth');
@@ -129,9 +150,18 @@
                 },
                 success: function(response) {
                   userProfilePlaceholder.innerHTML = userProfileTemplate(response);
-
                   $('#login').hide();
                   $('#loggedin').show();
+                }
+            });
+            //playlist date of the user
+            $.ajax({
+                url: 'https://api.spotify.com/v1/me/playlists',
+                headers: {
+                  'Authorization': 'Bearer ' + access_token
+                },
+                success: function(response) {
+                  userPlaylistPlaceholder.innerHTML = userPlaylistTemplate(response);
                 }
             });
           } else {
