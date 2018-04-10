@@ -11,10 +11,24 @@ var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
+var mongoose = require('mongoose');
 
 var client_id = 'bfe355d57c4948e2a2a535e2c6d5becf'; // Your client id
 var client_secret = '3d8aa7bcb618480eaaf05bbb17551e71'; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+
+mongoose.connect('mongodb://perry:test@ds237669.mlab.com:37669/cs411team2');
+var Schema = mongoose.Schema;
+var users = mongoose.model('spotify', new Schema({email: String},{collection: 'spotify'}));
+users.find({}, function(err, docs){
+  if(err)
+    console.log('error occured in the database');
+
+  //get just the emails
+  docs.forEach( function(element){
+    console.log(element.email);
+  });
+});
 
 var access_token = "error";
 
@@ -115,7 +129,7 @@ app.get('/callback', function(req, res) {
         };
         // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
-          //check the top artists around. 
+          //check the top artists around.
 	          //console.log(body["items"]);
         });
 
