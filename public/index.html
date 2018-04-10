@@ -1,7 +1,6 @@
 <!doctype html>
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="bootstrap.css">
     <title>Example of the Authorization Code flow with Spotify</title>
 
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -22,10 +21,36 @@
         margin-left: 150px;
         margin-top: 40px;
       }
+      .playlist{
+        text-align: center;
+        width: 200px;
+        height: 250px;
+        float: left;
+      }
+      .all{
+        text-align: center;
+        width: 100%;
+        height: 100%;
+        max-width: 9999px;
+      }
     </style>
 
   </head>
  <body>
+   <script>
+     function loadPlaylist(url_call){
+       var res = url_call.split("/");
+       console.log(res);
+       $.ajax({
+         url: '/playlist',
+         data: {
+           'user_id': res[5],
+           'playlist_id': res[7]
+         }
+       });
+     };
+   </script>
+
     <div class="container">
       <div id="login">
         <h1>This is an example of the Authorization Code flow</h1>
@@ -34,8 +59,8 @@
       <div id="loggedin">
         <div id="user-profile"></div>
         <div id="user-playlist"></div>
-        <div id="oauth"></div>
-        <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
+        <!-- <div id="oauth"></div> -->
+        <!-- <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button> -->
       </div>
     </div>
 
@@ -60,29 +85,26 @@
 
     <script id="user-playlist-template" type="text/x-handlebars-template">
       <h1>Your Playlists!</h1>
-      {{#each items}}
-      <div class="media">
-        <div class="pull-left">
-          <img class="media-object" width="150" src="{{images.0.url}}" />
-        </div>
-        <div class="media-body">
-          <dl class="dl-horizontal">
+      <div class="all">
+        {{#each items}}
+        <div onclick="loadPlaylist('{{tracks.href}}');" style="cursor:pointer;" class="playlist">
+            <img width="150" src="{{images.0.url}}"/>
             <dt>Playlist Name</dt><dd class="clearfix">{{name}}</dd>
             <dt>Total Tracks</dt><dd>{{tracks.total}}</dd>
-            <dt>Spotify URI</dt><dd><a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd>
-          </dl>
+            <!-- <dt>Spotify URI</dt><dd><a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd> -->
         </div>
+        {{/each}}
       </div>
-      {{/each}}
     </script>
 
-    <script id="oauth-template" type="text/x-handlebars-template">
+    <!-- <script id="oauth-template" type="text/x-handlebars-template">
       <h2>oAuth info</h2>
       <dl class="dl-horizontal">
         <dt>Access token</dt><dd class="text-overflow">{{access_token}}</dd>
         <dt>Refresh token</dt><dd class="text-overflow">{{refresh_token}}></dd>
       </dl>
-    </script>
+    </script> -->
+
     <div class="indent">
       <h2> SEARCH TRACK </h2>
       <input type="text" id="track">
@@ -123,9 +145,9 @@
             userPlaylistTemplate = Handlebars.compile(userPlaylistSource),
             userPlaylistPlaceholder = document.getElementById('user-playlist');
 
-        var oauthSource = document.getElementById('oauth-template').innerHTML,
-            oauthTemplate = Handlebars.compile(oauthSource),
-            oauthPlaceholder = document.getElementById('oauth');
+        // var oauthSource = document.getElementById('oauth-template').innerHTML,
+        //     oauthTemplate = Handlebars.compile(oauthSource),
+        //     oauthPlaceholder = document.getElementById('oauth');
 
         var params = getHashParams();
 
@@ -138,10 +160,10 @@
         } else {
           if (access_token) {
             // render oauth info
-            oauthPlaceholder.innerHTML = oauthTemplate({
-              access_token: access_token,
-              refresh_token: refresh_token
-            });
+            // oauthPlaceholder.innerHTML = oauthTemplate({
+            //   access_token: access_token,
+            //   refresh_token: refresh_token
+            // });
 
             $.ajax({
                 url: 'https://api.spotify.com/v1/me',
@@ -162,6 +184,22 @@
                 },
                 success: function(response) {
                   userPlaylistPlaceholder.innerHTML = userPlaylistTemplate(response);
+                  //get the artists of the playlist chosen (first one for now)
+                  var url_call = response["items"][0]["tracks"]["href"];
+                  $.ajax({
+                    url: url_call,
+                    headers: {
+                      'Authorization': 'Bearer ' + access_token
+                    },
+                    success: function(res) {
+                      var artists = {};
+                      res["items"].forEach(function(arr){
+                        var name = arr["track"]["artists"][0]["name"];
+                        artists[name] = (artists[name] || 0) + 1;
+                      });
+                      console.log(artists);
+                    }
+                  })
                 }
             });
           } else {
@@ -170,20 +208,20 @@
               $('#loggedin').hide();
           }
 
-          document.getElementById('obtain-new-token').addEventListener('click', function() {
-            $.ajax({
-              url: '/refresh_token',
-              data: {
-                'refresh_token': refresh_token
-              }
-            }).done(function(data) {
-              access_token = data.access_token;
-              oauthPlaceholder.innerHTML = oauthTemplate({
-                access_token: access_token,
-                refresh_token: refresh_token
-              });
-            });
-          }, false);
+          // document.getElementById('obtain-new-token').addEventListener('click', function() {
+          //   $.ajax({
+          //     url: '/refresh_token',
+          //     data: {
+          //       'refresh_token': refresh_token
+          //     }
+          //   }).done(function(data) {
+          //     access_token = data.access_token;
+          //     oauthPlaceholder.innerHTML = oauthTemplate({
+          //       access_token: access_token,
+          //       refresh_token: refresh_token
+          //     });
+          //   });
+          // }, false);
 
 
           //GET RESULTS HERE

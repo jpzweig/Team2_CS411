@@ -27,7 +27,7 @@ users.find({}, function(err, docs){
     console.log('error occured in the database');
   //get just the emails
   docs.forEach( function(element){
-    console.log(element.email);
+    // console.log(element.email);
   });
 });
 
@@ -120,16 +120,22 @@ app.get('/callback', function(req, res) {
         var access_token = body.access_token,
             refresh_token = body.refresh_token;
 
+        var time_range = ['short_term','medium_term','long_term'];
 
         var options = {
-          url: 'https://api.spotify.com/v1/me/top/artists',
+          url: 'https://api.spotify.com/v1/me/top/artists?time_range='+time_range[0],
           headers: { 'Authorization': 'Bearer ' + access_token },
           json: true
         };
         // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
           //check the top artists around.
-	          //console.log(body["items"]);
+          var favoriteArtists = [];
+          body["items"].forEach(function(arr) {
+            //console.log(arr["name"]);
+            favoriteArtists.push(arr["name"]);
+          });
+          //console.log(favoriteArtists);
         });
 
         // we can also pass the token to the browser to make requests from there
@@ -172,7 +178,7 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
-
+//has q as param req aka req.query.q
 app.get('/search', function(req, res) {
 
   var authOptions = {
@@ -216,6 +222,58 @@ app.get('/search', function(req, res) {
     }
   });
 });
+
+//has url as params.
+app.get('/playlist', function(req, res) {
+  //here we generate a youtube playlist by the request of the user
+  var authOptions = {
+    url: 'https://accounts.spotify.com/api/token',
+    headers: {
+      'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+    },
+    form: {
+      grant_type: 'client_credentials'
+    },
+    json: true
+  };
+
+  //you always ask for the access token
+  request.post(authOptions, function(error, response, body) {
+    if (!error && response.statusCode === 200) {
+
+      // use the access token to access the Spotify Web API
+      var token = body.access_token;
+
+      var options = {
+        url: 'https://api.spotify.com/v1/users/' + req.query.user_id + '/playlists/' + req.query.playlist_id + '/tracks',
+        headers: { 'Authorization': 'Bearer ' + token },
+        json: true
+      };
+
+      //here is where the search request is made
+      request.get(options, function(error, response, body) {
+        //console.log(response);
+        if (!error && response.statusCode === 200) {
+          res.send({
+            'body': body
+          });
+          var artists = {};
+          body["items"].forEach(function(arr){
+            var name = arr["track"]["artists"][0]["name"];
+            artists[name] = (artists[name] || 0) + 1;
+          });
+          console.log(artists);
+        }else{
+          res.send({
+            'body': 'something went wrong'
+          });
+        }
+      });
+    }
+  });
+
+});
+
 
 console.log('Listening on 8888');
 app.listen(8888);
