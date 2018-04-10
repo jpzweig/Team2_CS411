@@ -1,7 +1,9 @@
 <!doctype html>
 <html>
   <head>
+    <link rel="stylesheet" type="text/css" href="bootstrap.css">
     <title>Example of the Authorization Code flow with Spotify</title>
+
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <style type="text/css">
       #login, #loggedin {
@@ -21,9 +23,9 @@
         margin-top: 40px;
       }
     </style>
-  </head>
 
-  <body>
+  </head>
+ <body>
     <div class="container">
       <div id="login">
         <h1>This is an example of the Authorization Code flow</h1>
@@ -38,7 +40,6 @@
     </div>
 
     <script id="user-profile-template" type="text/x-handlebars-template">
-      <h1>Logged in as {{display_name}}</h1>
       <div class="media">
         <div class="pull-left">
           <img class="media-object" width="150" src="{{images.0.url}}" />
@@ -94,7 +95,6 @@
         <p id="five"></p>
       </div>
     </div>
-
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
