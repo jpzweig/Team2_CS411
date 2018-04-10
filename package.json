@@ -8,7 +8,9 @@
     "express": "~4.0.0",
     "mongodb": "^3.0.0-rc0",
     "querystring": "~0.2.0",
-    "request": "~2.34.0"
+    "request": "~2.34.0",
+    "mongoose": "5.0.14",
+    "config": "1.30.0"
   },
   "scripts": {
     "start": "node app.js"
