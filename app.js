@@ -18,8 +18,13 @@ var client_id = config.get('client_id'); // Your client id
 var client_secret = config.get('client_secret'); // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
+
 var dbConfig = config.get('dbConfig');
 mongoose.connect(dbConfig);
+
+var mongo = require('mongodb');
+
+
 var Schema = mongoose.Schema;
 var users = mongoose.model('spotify', new Schema({email: String},{collection: 'spotify'}));
 users.find({}, function(err, docs){
@@ -30,6 +35,27 @@ users.find({}, function(err, docs){
     // console.log(element.email);
   });
 });
+
+const assert = require('assert');
+
+var MongoClient = require('mongodb').MongoClient;
+var url = config.get('mongo_add');
+
+var insert = function(url){
+  MongoClient.connect(url, function(err, db) {
+  if (err) throw err;
+  var dbo = db.db("411");
+  var myobj = { name: "Company Inc", address: "Highway 37" };
+  dbo.collection("Users").insertOne(myobj, function(err, res) {
+    if (err) throw err;
+    console.log("1 document inserted");
+    db.close();
+  });
+});
+}
+
+
+
 
 /**
  * Generates a random string containing numbers and letters
@@ -85,6 +111,34 @@ app.get('/login', function(req, res) {
     }));
 });
 
+app.get('/lol', async function() {
+  let client;
+
+  try {
+    client = await MongoClient.connect(url);
+    console.log("Connected correctly to server");
+
+    const db = client.db(dbName);
+
+    // Insert a single document
+    let r = await db.collection('inserts').insertOne({a:1});
+    assert.equal(1, r.insertedCount);
+
+    // Insert multiple documents
+    r = await db.collection('inserts').insertMany([{a:2}, {a:3}]);
+    assert.equal(2, r.insertedCount);
+  } catch (err) {
+    console.log(err.stack);
+  }
+
+  // Close connection
+  client.close();
+});
+
+app.get('/lol', function(url){
+  url.insert(url);
+});
+
 app.get('/callback', function(req, res) {
 
   // your application requests refresh and access tokens
@@ -123,7 +177,7 @@ app.get('/callback', function(req, res) {
         var time_range = ['short_term','medium_term','long_term'];
 
         var options = {
-          url: 'https://api.spotify.com/v1/me/top/artists?time_range='+time_range[0],
+          url: 'https://api.spotify.com/v1/me/top/artists?time_range='+time_range[2],
           headers: { 'Authorization': 'Bearer ' + access_token },
           json: true
         };
@@ -135,7 +189,17 @@ app.get('/callback', function(req, res) {
             //console.log(arr["name"]);
             favoriteArtists.push(arr["name"]);
           });
-          //console.log(favoriteArtists);
+          MongoClient.connect(url, function(err, db) {
+          if (err) throw err;
+          var dbo = db.db("411");
+          var myobj = { name: "favoriteArtists", address: favoriteArtists, accessToken: access_token };
+          dbo.collection("Users").insertOne(myobj, function(err, res) {
+            if (err) throw err;
+            console.log("1 document inserted");
+            db.close();
+          });
+        });
+          console.log(favoriteArtists);
         });
 
         // we can also pass the token to the browser to make requests from there
@@ -262,7 +326,7 @@ app.get('/playlist', function(req, res) {
             var name = arr["track"]["artists"][0]["name"];
             artists[name] = (artists[name] || 0) + 1;
           });
-          console.log(artists);
+        //  console.log(artists);
         }else{
           res.send({
             'body': 'something went wrong'
