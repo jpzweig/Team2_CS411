@@ -123,29 +123,29 @@ app.get('/login', function(req, res) {
     }));
 });
 
-app.get('/lol', async function() {
-  let client;
-
-  try {
-    client = await MongoClient.connect(url);
-    console.log("Connected correctly to server");
-
-    const db = client.db("411");
-
-    // Insert a single document
-    let r = await db.collection('Users').insertOne({a:1});
-    assert.equal(1, r.insertedCount);
-
-    // Insert multiple documents
-    r = await db.collection('Users').insertMany([{a:2}, {a:3}]);
-    assert.equal(2, r.insertedCount);
-  } catch (err) {
-    console.log(err.stack);
-  }
-
-  // Close connection
-  client.close();
-});
+// app.get('/lol', function() {
+//   let client;
+//
+//   try {
+//     client = await MongoClient.connect(url);
+//     console.log("Connected correctly to server");
+//
+//     const db = client.db("411");
+//
+//     // Insert a single document
+//     let r = await db.collection('Users').insertOne({a:1});
+//     assert.equal(1, r.insertedCount);
+//
+//     // Insert multiple documents
+//     r = await db.collection('Users').insertMany([{a:2}, {a:3}]);
+//     assert.equal(2, r.insertedCount);
+//   } catch (err) {
+//     console.log(err.stack);
+//   }
+//
+//   // Close connection
+//   client.close();
+// });
 
 app.get('/lol', function(req, res){
 //  url.insert(url);
