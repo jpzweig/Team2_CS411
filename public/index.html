@@ -1,8 +1,8 @@
 <!doctype html>
 <html>
   <head>
+    <link rel="stylesheet" type="text/css" href="bootstrap.css">
     <title>Example of the Authorization Code flow with Spotify</title>
-
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <style type="text/css">
       #login, #loggedin {
@@ -51,6 +51,9 @@
      };
    </script>
 
+  </head>
+ <body>
+>>>>>>> origin/jpzweig
     <div class="container">
       <div id="login">
         <h1>This is an example of the Authorization Code flow</h1>
@@ -63,8 +66,46 @@
         <!-- <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button> -->
       </div>
     </div>
+    <style>
+    .buttona{
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 48px 75px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        -webkit-transition-duration: 0.4s; /* Safari */
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+
+    .button_generate {
+      background-color: white;
+      color: black;
+      border: 2px solid #4CAF50;
+      border-radius: 12px;
+    }
+
+    .button_generate:hover {
+        background-color: #4CAF50;
+        color: white;
+    }
+    </style>
+
 
     <script id="user-profile-template" type="text/x-handlebars-template">
+<<<<<<< HEAD
+=======
+      <welcome><h1>Welcome, {{id}}!</h1></welcome>
+      <img src="spot.png" alt="spotify logo" width="100" height="100">
+      <img src="youtube.png" alt="youtube logo" width="250" height="166">
+      <img class="media-object" width="150" src="{{images.0.url}}" />
+      <buttona class = "button_generate" font-size: "18px" >Generate Playlist</buttona>
+<!--
+>>>>>>> origin/jpzweig
       <div class="media">
         <div class="pull-left">
           <img class="media-object" width="150" src="{{images.0.url}}" />
@@ -81,6 +122,7 @@
           </dl>
         </div>
       </div>
+    -->
     </script>
 
     <script id="user-playlist-template" type="text/x-handlebars-template">
@@ -110,11 +152,11 @@
       <input type="text" id="track">
       <button id="submit-button">submit</button>
       <div class="results">
-        <p id="one"></p>
-        <p id="two"></p>
-        <p id="three"></p>
-        <p id="four"></p>
-        <p id="five"></p>
+        <p2 id="one"></p2>
+        <p2 id="two"></p2>
+        <p2 id="three"></p2>
+        <p2 id="four"></p2>
+        <p2 id="five"></p2>
       </div>
     </div>
 
