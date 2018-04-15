@@ -227,7 +227,7 @@ app.get('/callback', function(req, res) {
           var dbo = db.db("411");
           var myobj = { name: me.display_name, email:me.email, address: favoriteArtists, accessToken: access_token };
 
-          if (dbo.collection("Users").find({email:{$exists:true, $eq:me.email}})!= null) {
+          if (dbo.collection("Users").find({email:{$exists:true, $eq:me.email}})!= false) {
 
             dbo.collection("Users").update(
                 { email:me.email },
@@ -247,7 +247,7 @@ app.get('/callback', function(req, res) {
               if (err) throw err;
               console.log("1 document inserted");
               db.close();
-          });}
+          })}
 /*          else{
           dbo.collection("Users").insertOne(myobj, function(err, res) {
             if (err) throw err;
