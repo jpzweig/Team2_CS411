@@ -227,6 +227,7 @@ app.get('/search', function(req, res) {
 //it gets the playlists artists and the number of times they appear
 app.get('/playlist', function(req, res) {
   //here we generate a youtube playlist by the request of the user
+
   var authOptions = {
     url: 'https://accounts.spotify.com/api/token',
     headers: {
