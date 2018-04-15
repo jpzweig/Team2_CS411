@@ -9,11 +9,16 @@
     "express": "~4.0.0",
     "mongodb": "^3.0.0-rc0",
     "mongoose": "5.0.14",
+<<<<<<< HEAD
     "npm": "^5.8.0",
     "querystring": "~0.2.0",
     "request": "~2.34.0",
     "querystring": "~0.2.0",
     "request": "~2.34.0",
+=======
+    "querystring": "~0.2.0",
+    "request": "~2.34.0",
+>>>>>>> origin/nathan
     "spotify-web-api-node": "file:spotify-web-api-node"
   },
   "scripts": {
