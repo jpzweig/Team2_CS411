@@ -1,0 +1,5 @@
+{
+  "dbConfig": "mongodb://perry:test@ds237669.mlab.com:37669/cs411team2",
+  "client_id": "bfe355d57c4948e2a2a535e2c6d5becf",
+  "client_secret": "3d8aa7bcb618480eaaf05bbb17551e71"
+}

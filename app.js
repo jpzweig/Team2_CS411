@@ -18,6 +18,18 @@ var client_id = config.get('client_id'); // Your client id
 var client_secret = config.get('client_secret'); // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
+let accessGlobal = "Hello";
+
+var SpotifyWebApi = require('spotify-web-api-node');
+var me = {};
+
+// credentials are optional
+var spotifyApi = new SpotifyWebApi({
+  clientId : client_id ,
+  clientSecret : client_secret,
+  redirectUri : redirect_uri
+});
+
 
 var dbConfig = config.get('dbConfig');
 mongoose.connect(dbConfig);
@@ -32,7 +44,7 @@ users.find({}, function(err, docs){
     console.log('error occured in the database');
   //get just the emails
   docs.forEach( function(element){
-    // console.log(element.email);
+     //console.log(element.email);
   });
 });
 
@@ -118,14 +130,14 @@ app.get('/lol', async function() {
     client = await MongoClient.connect(url);
     console.log("Connected correctly to server");
 
-    const db = client.db(dbName);
+    const db = client.db("411");
 
     // Insert a single document
-    let r = await db.collection('inserts').insertOne({a:1});
+    let r = await db.collection('Users').insertOne({a:1});
     assert.equal(1, r.insertedCount);
 
     // Insert multiple documents
-    r = await db.collection('inserts').insertMany([{a:2}, {a:3}]);
+    r = await db.collection('Users').insertMany([{a:2}, {a:3}]);
     assert.equal(2, r.insertedCount);
   } catch (err) {
     console.log(err.stack);
@@ -135,8 +147,10 @@ app.get('/lol', async function() {
   client.close();
 });
 
-app.get('/lol', function(url){
-  url.insert(url);
+app.get('/lol', function(req, res){
+//  url.insert(url);
+  console.log(me);
+  res.send({'body':'hello'});
 });
 
 app.get('/callback', function(req, res) {
@@ -174,6 +188,10 @@ app.get('/callback', function(req, res) {
         var access_token = body.access_token,
             refresh_token = body.refresh_token;
 
+         accessGlobal = body.access_token;
+
+          console.log('check', accessGlobal);
+
         var time_range = ['short_term','medium_term','long_term'];
 
         var options = {
@@ -183,22 +201,58 @@ app.get('/callback', function(req, res) {
         };
         // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
+
+          spotifyApi.setAccessToken(access_token);
+
+          spotifyApi.getMe().then(function(data) {
+            //  data = data.body;
+             me = data.body;
+            }, function(err) {
+              console.log('Something went wrong!', err);
+            });
+            console.log('hello', me);
+            console.log('hello', accessGlobal);
+
+
+
           //check the top artists around.
           var favoriteArtists = [];
           body["items"].forEach(function(arr) {
             //console.log(arr["name"]);
             favoriteArtists.push(arr["name"]);
           });
+
           MongoClient.connect(url, function(err, db) {
           if (err) throw err;
           var dbo = db.db("411");
-          var myobj = { name: "favoriteArtists", address: favoriteArtists, accessToken: access_token };
+          var myobj = { name: me.display_name, email:me.email, address: favoriteArtists, accessToken: access_token };
+
+          if (dbo.collection("Users").find({email:{$exists:true, $eq:me.email}})!= null) {
+
+            dbo.collection("Users").update(
+                { email:me.email },
+                { $set:
+                  {
+                    name: me.display_name,
+                    address: favoriteArtists,
+                    accessToken: access_token
+                  }
+                }
+              );
+              db.close();
+
+          }
+          else{console.log("no")}
+/*          else{
           dbo.collection("Users").insertOne(myobj, function(err, res) {
             if (err) throw err;
             console.log("1 document inserted");
+
             db.close();
           });
-        });
+        });*/
+      });
+
           console.log(favoriteArtists);
         });
 
@@ -289,6 +343,8 @@ app.get('/search', function(req, res) {
 
 //has url as params.
 app.get('/playlist', function(req, res) {
+
+
   //here we generate a youtube playlist by the request of the user
   var authOptions = {
     url: 'https://accounts.spotify.com/api/token',
@@ -320,13 +376,16 @@ app.get('/playlist', function(req, res) {
         if (!error && response.statusCode === 200) {
           res.send({
             'body': body
+
           });
+          console.log('hello', me);
           var artists = {};
           body["items"].forEach(function(arr){
             var name = arr["track"]["artists"][0]["name"];
             artists[name] = (artists[name] || 0) + 1;
           });
-        //  console.log(artists);
+          console.log(artists);
+          console.log('bonjour',accessGlobal);
         }else{
           res.send({
             'body': 'something went wrong'
