@@ -242,7 +242,12 @@ app.get('/callback', function(req, res) {
               db.close();
 
           }
-          else{console.log("no")}
+          else{
+            dbo.collection("Users").insertOne(myobj, function(err, res) {
+              if (err) throw err;
+              console.log("1 document inserted");
+              db.close();
+          })};
 /*          else{
           dbo.collection("Users").insertOne(myobj, function(err, res) {
             if (err) throw err;
