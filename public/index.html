@@ -1,163 +1,92 @@
 <!doctype html>
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="bootstrap.css">
-    <title>Example of the Authorization Code flow with Spotify</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Free concert vibes only</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <style type="text/css">
-      #login, #loggedin {
-        display: none;
-      }
-      .text-overflow {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        width: 500px;
-      }
-      .results{
-        width: 50%;
-      }
-      .indent{
-        margin-left: 150px;
-        margin-top: 40px;
-      }
-      .playlist{
-        text-align: center;
-        width: 200px;
-        height: 250px;
-        float: left;
-      }
-      .all{
-        text-align: center;
-        width: 100%;
-        height: 100%;
-        max-width: 9999px;
-      }
-    </style>
-
   </head>
- <body>
-   <script>
-     function loadPlaylist(url_call){
-       var res = url_call.split("/");
-       console.log(res);
-       $.ajax({
-         url: '/playlist',
-         data: {
-           'user_id': res[5],
-           'playlist_id': res[7]
-         }
-       });
-     };
-   </script>
-
-  </head>
- <body>
-    <div class="container">
-      <div id="login">
-        <h1>This is an example of the Authorization Code flow</h1>
-        <a href="/login" class="btn btn-primary">Log in with Spotify</a>
-      </div>
-      <div id="loggedin">
-        <div id="user-profile"></div>
-        <div id="user-playlist"></div>
-        <!-- <div id="oauth"></div> -->
-        <!-- <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button> -->
-      </div>
+  <body>
+    <!-- background stuff -->
+    <div class="fullscreen-bg">
+      <div id="particles-js"></div>
+      <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+      <script>
+        particlesJS.load('particles-js', 'particles.json', function() {
+          console.log('callback - particles.js config loaded');
+        });
+      </script>
     </div>
-    <style>
-    .buttona{
-        background-color: #4CAF50; /* Green */
-        border: none;
-        color: white;
-        padding: 48px 75px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
-        -webkit-transition-duration: 0.4s; /* Safari */
-        transition-duration: 0.4s;
-        cursor: pointer;
-    }
+      <script>
+        function loadPlaylist(url_call){
+          var res = url_call.split("/");
+          console.log(res);
+          $.ajax({
+            url: '/playlist',
+            data: {
+              'user_id': res[5],
+              'playlist_id': res[7]
+            }
+          });
+        };
+      </script>
 
-    .button_generate {
-      background-color: white;
-      color: black;
-      border: 2px solid #4CAF50;
-      border-radius: 12px;
-    }
-
-    .button_generate:hover {
-        background-color: #4CAF50;
-        color: white;
-    }
-    </style>
-
-
-    <script id="user-profile-template" type="text/x-handlebars-template">
-      <welcome><h1>Welcome, {{id}}!</h1></welcome>
-      <img src="spot.png" alt="spotify logo" width="100" height="100">
-      <img src="youtube.png" alt="youtube logo" width="250" height="166">
-      <img class="media-object" width="150" src="{{images.0.url}}" />
-      <buttona class = "button_generate" font-size: "18px" >Generate Playlist</buttona>
-<!--
-      <div class="media">
-        <div class="pull-left">
-          <img class="media-object" width="150" src="{{images.0.url}}" />
+      <div class="body-login">
+        <div id="login">
+          <h1>Please login to your spotify account to start</h1>
+          <div class="padd">
+            <a href="/login" class="btn btn-outline-light">Log in with Spotify</a>
+          </div>
         </div>
-        <div class="media-body">
-          <dl class="dl-horizontal">
-            <dt>Display name</dt><dd class="clearfix">{{display_name}}</dd>
-            <dt>Id</dt><dd>{{id}}</dd>
-            <dt>Email</dt><dd>{{email}}</dd>
-            <dt>Spotify URI</dt><dd><a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd>
-            <dt>Link</dt><dd><a href="{{href}}">{{href}}</a></dd>
-            <dt>Profile Image</dt><dd class="clearfix"><a href="{{images.0.url}}">{{images.0.url}}</a></dd>
-            <dt>Country</dt><dd>{{country}}</dd>
-          </dl>
+        <div id="loggedin">
+          <div id="user-profile"></div>
+          <div id="user-playlist"></div>
+          <!-- <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button> -->
         </div>
       </div>
-    -->
-    </script>
 
-    <script id="user-playlist-template" type="text/x-handlebars-template">
-      <h1>Your Playlists!</h1>
-      <div class="all">
-        {{#each items}}
-        <div onclick="loadPlaylist('{{tracks.href}}');" style="cursor:pointer;" class="playlist">
-            <img width="150" src="{{images.0.url}}"/>
-            <dt>Playlist Name</dt><dd class="clearfix">{{name}}</dd>
-            <dt>Total Tracks</dt><dd>{{tracks.total}}</dd>
-            <!-- <dt>Spotify URI</dt><dd><a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd> -->
+      <script id="user-profile-template" type="text/x-handlebars-template">
+        <welcome><h1>Welcome, {{id}}!</h1></welcome>
+        <img src="spot.png" alt="spotify logo" width="100" height="100">
+        <img src="youtube.png" alt="youtube logo" width="250" height="166">
+        <img class="media-object" width="150" src="{{images.0.url}}" />
+        <buttona class = "button_generate" font-size: "18px" >Generate Playlist</buttona>
+      </script>
+
+      <script id="user-playlist-template" type="text/x-handlebars-template">
+        <h1>Your Playlists!</h1>
+        <div class="all">
+          {{#each items}}
+          <div onclick="loadPlaylist('{{tracks.href}}');" style="cursor:pointer;" class="playlist">
+              <img width="150" src="{{images.0.url}}"/>
+              <dt>Playlist Name</dt><dd class="clearfix">{{name}}</dd>
+              <dt>Total Tracks</dt><dd>{{tracks.total}}</dd>
+          </div>
+          {{/each}}
         </div>
-        {{/each}}
-      </div>
-    </script>
+      </script>
 
-    <!-- <script id="oauth-template" type="text/x-handlebars-template">
-      <h2>oAuth info</h2>
-      <dl class="dl-horizontal">
-        <dt>Access token</dt><dd class="text-overflow">{{access_token}}</dd>
-        <dt>Refresh token</dt><dd class="text-overflow">{{refresh_token}}></dd>
-      </dl>
-    </script> -->
-
-    <div class="indent">
-      <h2> SEARCH TRACK </h2>
-      <input type="text" id="track">
-      <button id="submit-button">submit</button>
-      <div class="results">
-        <p2 id="one"></p2>
-        <p2 id="two"></p2>
-        <p2 id="three"></p2>
-        <p2 id="four"></p2>
-        <p2 id="five"></p2>
-      </div>
-    </div>
+      <!-- <div class="indent">
+        <h2> SEARCH TRACK </h2>
+        <input type="text" id="track">
+        <button id="submit-button">submit</button>
+        <div class="results">
+          <p2 id="one"></p2>
+          <p2 id="two"></p2>
+          <p2 id="three"></p2>
+          <p2 id="four"></p2>
+          <p2 id="five"></p2>
+        </div>
+      </div> -->
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <div class="footer1">
+      Spring 2018: CS411 Project
+    </div>
     <script>
       (function() {
 
@@ -182,10 +111,6 @@
         var userPlaylistSource = document.getElementById('user-playlist-template').innerHTML,
             userPlaylistTemplate = Handlebars.compile(userPlaylistSource),
             userPlaylistPlaceholder = document.getElementById('user-playlist');
-
-        // var oauthSource = document.getElementById('oauth-template').innerHTML,
-        //     oauthTemplate = Handlebars.compile(oauthSource),
-        //     oauthPlaceholder = document.getElementById('oauth');
 
         var params = getHashParams();
 
