@@ -14,6 +14,7 @@ var cookieParser = require('cookie-parser');
 var mongoose = require('mongoose');
 var config = require('config');
 
+
 var client_id = config.get('client_id'); // Your client id
 var client_secret = config.get('client_secret'); // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
@@ -144,12 +145,6 @@ app.get('/login', function(req, res) {
 //   client.close();
 // });
 
-app.get('/lol', function(req, res){
-//  url.insert(url);
-  console.log(me);
-  res.send({'body':'hello'});
-});
-
 app.get('/callback', function(req, res) {
 
   // your application requests refresh and access tokens
@@ -187,8 +182,6 @@ app.get('/callback', function(req, res) {
 
          accessGlobal = body.access_token;
 
-          console.log('check', accessGlobal);
-
         var time_range = ['short_term','medium_term','long_term'];
 
         var options = {
@@ -202,20 +195,14 @@ app.get('/callback', function(req, res) {
           spotifyApi.setAccessToken(access_token);
 
           spotifyApi.getMe().then(function(data) {
-            //  data = data.body;
              me = data.body;
             }, function(err) {
               console.log('Something went wrong!', err);
             });
-            console.log('hello', me);
-            console.log('hello', accessGlobal);
-
-
 
           //check the top artists around.
           var favoriteArtists = [];
           body["items"].forEach(function(arr) {
-            //console.log(arr["name"]);
             favoriteArtists.push(arr["name"]);
           });
 
@@ -224,27 +211,30 @@ app.get('/callback', function(req, res) {
           var dbo = db.db("411");
           var myobj = { name: me.display_name, email:me.email, address: favoriteArtists, accessToken: access_token };
 
-          if (dbo.collection("Users").find({email:{$exists:true, $eq:me.email}})!= false) {
-
-            dbo.collection("Users").update(
-                { email:me.email },
-                { $set:
-                  {
-                    name: me.display_name,
-                    address: favoriteArtists,
-                    accessToken: access_token
+          dbo.collection("Users").findOne({email: me.email}, function(err, result){
+            if (err) throw err;
+            if (result == null){
+              console.log("adding");
+              dbo.collection("Users").insertOne(myobj, function(err, res) {
+                if (err) throw err;
+                console.log("1 document inserted");
+                db.close();
+              });
+            }else{
+              console.log("updating")
+              dbo.collection("Users").update(
+                  { email:me.email },
+                  { $set:
+                    {
+                      name: me.display_name,
+                      address: favoriteArtists,
+                      accessToken: access_token
+                    }
                   }
-                }
-              );
-              db.close();
-
-          }
-          else{
-            dbo.collection("Users").insertOne(myobj, function(err, res) {
-              if (err) throw err;
-              console.log("1 document inserted");
-              db.close();
-          })}
+                );
+                db.close();
+            }
+          });
 /*          else{
           dbo.collection("Users").insertOne(myobj, function(err, res) {
             if (err) throw err;
@@ -301,103 +291,59 @@ app.get('/refresh_token', function(req, res) {
 //has q as param req aka req.query.q
 app.get('/search', function(req, res) {
 
-  var authOptions = {
-    url: 'https://accounts.spotify.com/api/token',
-    headers: {
-      'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-    },
-    form: {
-      grant_type: 'client_credentials'
-    },
-    json: true
-  };
+    //setting up the search parameters
+    var options = {
+      url: 'https://api.spotify.com/v1/search?type=track&q=' + req.query.q +'&limit=5',
+      headers: { 'Authorization': 'Bearer ' + accessGlobal },
+      json: true
+    };
 
-  //you always ask for the access token
-  request.post(authOptions, function(error, response, body) {
-    if (!error && response.statusCode === 200) {
+    //here is where the search request is made
+    request.get(options, function(error, response, body) {
+      //console.log(response);
+      if (!error && response.statusCode === 200) {
+        res.send({
+          'body': body
+        });
+      }else{
+        res.send({
+          'body': 'something went wrong'
+        });
+      }
+    });
 
-      // use the access token to access the Spotify Web API
-      var token = body.access_token;
-      // console.log(token);
-      // console.log(req.query.q);
-      var options = {
-        url: 'https://api.spotify.com/v1/search?type=track&q=' + req.query.q +'&limit=5',
-        headers: { 'Authorization': 'Bearer ' + token },
-        json: true
-      };
-
-      //here is where the search request is made
-      request.get(options, function(error, response, body) {
-        //console.log(response);
-        if (!error && response.statusCode === 200) {
-          res.send({
-            'body': body
-          });
-        }else{
-          res.send({
-            'body': 'something went wrong'
-          });
-        }
-      });
-    }
-  });
 });
 
 //has user_id and playlist_id as params
 //it gets the playlists artists and the number of times they appear
 app.get('/playlist', function(req, res) {
 
+    var options = {
+      url: 'https://api.spotify.com/v1/users/' + req.query.user_id + '/playlists/' + req.query.playlist_id + '/tracks',
+      headers: { 'Authorization': 'Bearer ' + accessGlobal },
+      json: true
+    };
 
-  //here we generate a youtube playlist by the request of the user
+    //here is where the search request is made
+    request.get(options, function(error, response, body) {
+      //console.log(response);
+      if (!error && response.statusCode === 200) {
+        res.send({
+          'body': body
 
-  var authOptions = {
-    url: 'https://accounts.spotify.com/api/token',
-    headers: {
-      'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-    },
-    form: {
-      grant_type: 'client_credentials'
-    },
-    json: true
-  };
-
-  //you always ask for the access token
-  request.post(authOptions, function(error, response, body) {
-    if (!error && response.statusCode === 200) {
-
-      // use the access token to access the Spotify Web API
-      var token = body.access_token;
-
-      var options = {
-        url: 'https://api.spotify.com/v1/users/' + req.query.user_id + '/playlists/' + req.query.playlist_id + '/tracks',
-        headers: { 'Authorization': 'Bearer ' + token },
-        json: true
-      };
-
-      //here is where the search request is made
-      request.get(options, function(error, response, body) {
-        //console.log(response);
-        if (!error && response.statusCode === 200) {
-          res.send({
-            'body': body
-
-          });
-          console.log('hello', me);
-          var artists = {};
-          body["items"].forEach(function(arr){
-            var name = arr["track"]["artists"][0]["name"];
-            artists[name] = (artists[name] || 0) + 1;
-          });
-          console.log(artists);
-          console.log('bonjour',accessGlobal);
-        }else{
-          res.send({
-            'body': 'something went wrong'
-          });
-        }
-      });
-    }
-  });
+        });
+        var artists = {};
+        body["items"].forEach(function(arr){
+          var name = arr["track"]["artists"][0]["name"];
+          artists[name] = (artists[name] || 0) + 1;
+        });
+        console.log(artists);
+      }else{
+        res.send({
+          'body': 'something went wrong'
+        });
+      }
+    });
 
 });
 
