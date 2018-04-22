@@ -1,0 +1,10 @@
+Our mongoDB Schema: 
+{
+  name: String,
+  email: String,
+  address: Array,
+  accessToken: String
+}
+
+The required fields are email and address (favorite artists) and accessToken
+we make the search by querying a logged in user's email and then using its save artists. 
