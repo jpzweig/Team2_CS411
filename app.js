@@ -13,7 +13,7 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var mongoose = require('mongoose');
 var config = require('config');
-var engines = require('consolidate');
+
 
 var client_id = config.get('client_id'); // Your client id
 var client_secret = config.get('client_secret'); // Your secret
@@ -121,10 +121,6 @@ app.get('/login', function(req, res) {
     }));
 });
 
-app.set('views', __dirname + '/public');
-app.engine('html', engines.mustache);
-app.set('view engine', 'html');
-
 // app.get('/lol', function() {
 //   let client;
 //
@@ -213,35 +209,30 @@ app.get('/callback', function(req, res) {
           MongoClient.connect(url, function(err, db) {
           if (err) throw err;
           var dbo = db.db("411");
-<<<<<<< Updated upstream
           console.log(me);
-          var myobj = { name: me.display_name, email:me.email, address: favoriteArtists, accessToken: access_token };
+          var myobj = { name: me.display_name, email:me.email, address: favoriteArtists, accessToken: access_token, accessed: Date.now()};
           console.log("email" + me.email);
-=======
-          var myobj = { name: me.display_name, email:me.email, address: favoriteArtists, time: Date.now(), accessToken: access_token };
-
->>>>>>> Stashed changes
           dbo.collection("Users").findOne({email: me.email}, function(err, result){
-            console.log(result);
             if (err) throw err;
-            console.log(result);
+            // console.log(result);
             if (result == null){
               console.log("adding");
+              console.log("email " + me.email);
               dbo.collection("Users").insertOne(myobj, function(err, res) {
                 if (err) throw err;
                 console.log("1 document inserted");
                 db.close();
               });
             }else{
-              console.log("updating");
+              console.log("updating")
               dbo.collection("Users").update(
                   { email:me.email },
                   { $set:
                     {
                       name: me.display_name,
                       address: favoriteArtists,
-                      time: Date.now(),
-                      accessToken: access_token
+                      accessToken: access_token,
+                      accessed: Date.now()
                     }
                   }
                 );
@@ -258,7 +249,7 @@ app.get('/callback', function(req, res) {
         });*/
       });
 
-          console.log(favoriteArtists);
+          // console.log(favoriteArtists);
         });
 
         // we can also pass the token to the browser to make requests from there
@@ -358,14 +349,6 @@ app.get('/playlist', function(req, res) {
       }
     });
 
-});
-
-
-app.get('/youtube', (req, res)=>{
-
-  // req.parameters
-  // var playlisturl=""
-  res.render('youtube.html', {email: 'srm@bu.edu'});
 });
 
 
