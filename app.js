@@ -209,10 +209,12 @@ app.get('/callback', function(req, res) {
           MongoClient.connect(url, function(err, db) {
           if (err) throw err;
           var dbo = db.db("411");
+          console.log(me);
           var myobj = { name: me.display_name, email:me.email, address: favoriteArtists, accessToken: access_token };
-
+          console.log("email" + me.email);
           dbo.collection("Users").findOne({email: me.email}, function(err, result){
             if (err) throw err;
+            console.log(result);
             if (result == null){
               console.log("adding");
               dbo.collection("Users").insertOne(myobj, function(err, res) {
