@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
     <title>free concert vibes only</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -32,6 +33,11 @@
             }
           });
         };
+
+        function showPlaylist(){
+            console.log("here");
+            $("#user-playlist").show("slow");
+        };
       </script>
 
       <div class="body-login">
@@ -43,31 +49,35 @@
         </div>
         <div id="loggedin">
           <div id="user-profile"></div>
-          <div id="user-playlist"></div>
-          <!-- <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button> -->
         </div>
+        <div id="user-playlist"></div>
       </div>
 
       <script id="user-profile-template" type="text/x-handlebars-template">
-        <welcome><h1>Welcome, {{id}}!</h1></welcome>
-        <img src="spot.png" alt="spotify logo" width="100" height="100">
+        <h2>Welcome, {{id}}!</h2>
+        <!-- <img src="spot.png" alt="spotify logo" width="100" height="100">
         <img src="youtube.png" alt="youtube logo" width="250" height="166">
-        <img class="media-object" width="150" src="{{images.0.url}}" />
-        <buttona class = "button_generate" font-size: "18px" >Generate Playlist</buttona>
+        <img class="media-object" width="150" src="{{images.0.url}}" /> -->
+        <h3>Choose one of the two options to generate a youtube playlist from:</h3>
+        <button class ="btn btn-outline-light" font-size: "18px" href="/youtube" target="_blank">your most listened to artists</button>
+        <button class="btn btn-outline-light" onclick="showPlaylist()">your spotify playlist</button>
       </script>
 
       <script id="user-playlist-template" type="text/x-handlebars-template">
-        <h1>Your Playlists!</h1>
+        <div id="user-playlist">
+        <h1>Please select a playlist</h1>
         <div class="all">
           {{#each items}}
           <div onclick="loadPlaylist('{{tracks.href}}');" style="cursor:pointer;" class="playlist">
               <img width="150" src="{{images.0.url}}"/>
-              <dt>Playlist Name</dt><dd class="clearfix">{{name}}</dd>
-              <dt>Total Tracks</dt><dd>{{tracks.total}}</dd>
+              <dd class="clearfix">{{name}}</dd>
+              <!-- <dt>Total Tracks</dt><dd>{{tracks.total}}</dd> -->
           </div>
           {{/each}}
         </div>
+        </div>
       </script>
+
 
       <!-- <div class="indent">
         <h2> SEARCH TRACK </h2>
@@ -83,7 +93,6 @@
       </div> -->
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <div class="footer1">
       Spring 2018: CS411 Project
     </div>
@@ -137,6 +146,7 @@
                   userProfilePlaceholder.innerHTML = userProfileTemplate(response);
                   $('#login').hide();
                   $('#loggedin').show();
+                  $("#user-playlist").hide();
                 }
             });
             //playlists of the user
@@ -169,6 +179,7 @@
               // render initial screen
               $('#login').show();
               $('#loggedin').hide();
+              $("#user-playlist").hide();
           }
 
           // document.getElementById('obtain-new-token').addEventListener('click', function() {
