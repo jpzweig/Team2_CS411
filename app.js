@@ -13,10 +13,12 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var mongoose = require('mongoose');
 var config = require('config');
+var youtube = require('googleapis');
 
 
 var client_id = config.get('client_id'); // Your client id
 var client_secret = config.get('client_secret'); // Your secret
+var yt_key = config.get('YT_API_key');
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
 let accessGlobal = "Hello";
@@ -351,6 +353,30 @@ app.get('/playlist', function(req, res) {
 
 });
 
+app.get('/youtubesearch', function(req, res) {
+  MongoClient.connect(url, function(err, db) {
+  if (err) throw err;
+  var dbo = db.db("411");
+  console.log(me);
+  console.log("email" + me.email);
+  var favArtist = dbo.collection("Users").find({email: me.email}).project({address: 1, _id: 0});
+  console.log(favArtist);
+  db.close();
+  }
+});
+
+function searchYT(key, requestData) {
+  var service = google.youtube('v3');
+  var parameters = removeEmptyParameters(requestData['params']);
+  parameters['auth'] = auth;
+  service.search.list(parameters, function(err, response) {
+    if (err) {
+      console.log('The API returned an error: ' + err);
+      return;
+    }
+    console.log(response);
+  });
+}
 
 console.log('Listening on 8888');
 app.listen(8888);

@@ -1,4 +1,4 @@
-Our mongoDB Schema: 
+Our mongoDB Schema:
 {
   name: String,
   email: String,
@@ -10,7 +10,7 @@ Our mongoDB Schema:
 }
 
 The required fields are email and address (favorite artists) and accessToken.
-we make the search by querying a logged in user's email and then using its save artists. 
+we make the search by querying a logged in user's email and then using its save artists.
 
 we're going to use accessed (it saves a timestamp) as the cache to check how long ago we've curated a youtube playlist for
-the logged user. 
+the logged user.
