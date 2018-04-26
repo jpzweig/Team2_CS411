@@ -362,7 +362,7 @@ app.get('/youtubesearch', function(req, res) {
   var favArtist = dbo.collection("Users").find({email: me.email}).project({address: 1, _id: 0});
   console.log(favArtist);
   db.close();
-  }
+});
 });
 
 function searchYT(key, requestData) {
