@@ -13,7 +13,8 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var mongoose = require('mongoose');
 var config = require('config');
-var youtube = require('googleapis');
+var google = require('googleapis');
+var gapi = require('gapi');
 
 
 var client_id = config.get('client_id'); // Your client id
@@ -353,7 +354,21 @@ app.get('/playlist', function(req, res) {
 
 });
 
+
+// Helper function to display JavaScript value on HTML page.
+function showResponse(response) {
+    var responseString = JSON.stringify(response, '', 2);
+    document.getElementById('response').innerHTML += responseString;
+}
+
+
+// Called automatically with the response of the YouTube API request.
+function onSearchResponse(response) {
+    showResponse(response);
+}
+
 app.get('/youtubesearch', function(req, res) {
+
   MongoClient.connect(url, function(err, db) {
   if (err) throw err;
   var dbo = db.db("411");
@@ -361,22 +376,47 @@ app.get('/youtubesearch', function(req, res) {
   console.log("email" + me.email);
   var favArtist = dbo.collection("Users").find({email: me.email}).project({address: 1, _id: 0});
   console.log(favArtist);
+
+  gapi.client.load('youtube', 'v3', onYouTubeApiLoad);
+  function onYouTubeApiLoad() {
+      gapi.client.setApiKey(yt_key);
+  }
+
+  var index;
+  for (index = 0; index < 5; index++) {
+    function search() {
+        // Use the JavaScript client library to create a search.list() API call.
+        var request = gapi.client.youtube.search.list({
+            part: 'snippet',
+            maxResults: '2',
+            q: '',
+            type: 'video'
+        });
+
+        // Send the request to the API server,
+        // and invoke onSearchRepsonse() with the response.
+        request.execute(onSearchResponse);
+    }
+
+  }
+  /**function searchYT(key, requestData) {
+    var service = google.youtube('v3');
+    var parameters = removeEmptyParameters(requestData['params']);
+    parameters['auth'] = auth;
+    service.search.list(parameters, function(err, response) {
+      if (err) {
+        console.log('The API returned an error: ' + err);
+        return;
+      }
+      console.log(response);
+    });
+  }**/
   db.close();
+
 });
 });
 
-function searchYT(key, requestData) {
-  var service = google.youtube('v3');
-  var parameters = removeEmptyParameters(requestData['params']);
-  parameters['auth'] = auth;
-  service.search.list(parameters, function(err, response) {
-    if (err) {
-      console.log('The API returned an error: ' + err);
-      return;
-    }
-    console.log(response);
-  });
-}
+
 
 console.log('Listening on 8888');
 app.listen(8888);
