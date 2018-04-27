@@ -13,6 +13,15 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var mongoose = require('mongoose');
 var config = require('config');
+const {google} = require('googleapis');
+var email = null;
+// var gapi = require('gapi');
+var search = require('youtube-search');
+var path = require('path');
+var engine = require('consolidate');
+var async = require('asyncawait/async');
+var await = require('asyncawait/await');
+
 
 
 var client_id = config.get('client_id'); // Your client id
@@ -103,6 +112,9 @@ var app = express();
 
 app.use(express.static(__dirname + '/public'))
    .use(cookieParser());
+//some html rendering thing
+// app.engine('html', engine.mustache);
+// app.set('view engine', 'html');
 
 app.get('/login', function(req, res) {
 
@@ -185,7 +197,7 @@ app.get('/callback', function(req, res) {
         var time_range = ['short_term','medium_term','long_term'];
 
         var options = {
-          url: 'https://api.spotify.com/v1/me/top/artists?time_range='+time_range[2],
+          url: 'https://api.spotify.com/v1/me/top/artists?time_range='+time_range[0],
           headers: { 'Authorization': 'Bearer ' + access_token },
           json: true
         };
@@ -210,6 +222,7 @@ app.get('/callback', function(req, res) {
           if (err) throw err;
           var dbo = db.db("411");
           console.log(me);
+          email = me.email;
           var myobj = { name: me.display_name, email:me.email, address: favoriteArtists, accessToken: access_token, accessed: Date.now()};
           console.log("email" + me.email);
           dbo.collection("Users").findOne({email: me.email}, function(err, result){
@@ -349,6 +362,105 @@ app.get('/playlist', function(req, res) {
       }
     });
 
+});
+
+//youtube api call to get search of videos
+app.get('/youtube', function(req, res){
+  var list = [];
+  var vids = [];
+  var error = 'yes';
+  var x = function (){
+    MongoClient.connect(url, function(err, db) {
+      if (err) throw err;
+      var dbo = db.db("411");
+      dbo.collection("Users").findOne({email: email}, function(err, result){
+        if (err) throw err;
+        if (result == null){
+          console.log("coudn't find the logged in user's data");
+        }else{
+          console.log(result);
+          //THE ARRAY OF ARTISTS HERE
+          list = result.address;
+          console.log("the list: ", list);
+          var opts = {
+            maxResults: 1,
+            key: 'AIzaSyAOWLoz4oC_e4WPI8-fELrrnllEDXmeKRQ'
+          };
+          list.forEach(function(element){
+            search(element+ ' live concert', opts, function(err, results) {
+              if(err) return console.log(err);
+              vids.push(results[0].id);
+              console.log(results[0].id);
+            });
+          });
+          if(vids.length != 0){
+            error = 'no';
+          }
+        }
+        db.close();
+      });
+    });
+    return null;
+  };
+  x();
+  var please = function(){
+    console.log('sending the request');
+    res.send({
+      'ids': vids,
+      'error': error
+    });
+  };
+  setTimeout(function(){ please()}, 500);
+});
+
+
+app.get('/playlistthing', function(req, res){
+  // var sampleClient = new SampleClient();
+  // // initialize the Youtube API library
+  // const youtube = google.youtube({
+  //   version: 'v3',
+  //   auth: sampleClient.oAuth2Client
+  // });
+  //
+  // // a very simple example of getting data from a playlist
+  // function runSample () {
+  //   // the first query will return data with an etag
+  //   const res = getPlaylistData(null);
+  //   const etag = res.data.etag;
+  //   console.log(`etag: ${etag}`);
+  //
+  //   // the second query will (likely) return no data, and an HTTP 304
+  //   // since the If-None-Match header was set with a matching eTag
+  //   const res2 = getPlaylistData(etag);
+  //   console.log(res2.status);
+  // }
+  //
+  // function getPlaylistData (etag) {
+  //   // Create custom HTTP headers for the request to enable use of eTags
+  //   const headers = {};
+  //   if (etag) {
+  //     headers['If-None-Match'] = etag;
+  //   }
+  //   const res = youtube.playlists.list({
+  //     part: 'id,snippet',
+  //     id: 'PLIivdWyY5sqIij_cgINUHZDMnGjVx3rxi',
+  //     headers: headers
+  //   });
+  //   console.log('Status code: ' + res.status);
+  //   console.log(res.data);
+  //   return res;
+  // }
+  // const scopes = [
+  //   'https://www.googleapis.com/auth/youtube'
+  // ];
+  //
+  // sampleClient.authenticate(scopes)
+  //   .then(c => runSample())
+  //   .catch(console.error);
+});
+
+app.get("/yt", (req, res) => {
+   res.sendfile('./public/youtube.html', {hello:"HELLO"});
 });
 
 
