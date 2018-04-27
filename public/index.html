@@ -180,21 +180,6 @@
                 success: function(response) {
                   userPlaylistPlaceholder.innerHTML = userPlaylistTemplate(response);
                   //get the artists of the playlist chosen (first one for now)
-                  var url_call = response["items"][0]["tracks"]["href"];
-                  $.ajax({
-                    url: url_call,
-                    headers: {
-                      'Authorization': 'Bearer ' + access_token
-                    },
-                    success: function(res) {
-                      var artists = {};
-                      res["items"].forEach(function(arr){
-                        var name = arr["track"]["artists"][0]["name"];
-                        artists[name] = (artists[name] || 0) + 1;
-                      });
-                      console.log(artists);
-                    }
-                  })
                 }
             });
           } else {

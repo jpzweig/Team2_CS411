@@ -229,9 +229,7 @@ app.get('/playlist', function(req, res) {
       if (!error && response.statusCode === 200) {
         var artists = {};
         body["items"].forEach(function(arr){
-          console.log(arr);
           var name = arr["track"]["artists"][0]["name"];
-          console.log(arr["track"]);
           artists[name] = (artists[name] || 0) + 1;
         });
         console.log(artists);
