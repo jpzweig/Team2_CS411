@@ -236,7 +236,7 @@ app.get('/playlist', function(req, res) {
         });
         console.log(artists);
         res.send({
-          'artists': artists;
+          'artists': artists
         });
       }else{
         res.send({
@@ -336,7 +336,7 @@ app.get('/playlistthing', function(req, res){
 
 app.get("/yt", (req, res) => {
   console.log("HERESS:");
-  res.render('youtube', {hello: "asdfasdfasdf"});
+  res.sendfile('../public/youtube.html');
 });
 
 app.get('/', function (req, res) {
