@@ -22,6 +22,8 @@ var client_secret = config.get('client_secret'); // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
 let accessGlobal = "";
+var favoriteArtists = [];
+var artistPictures = [];
 
 var SpotifyWebApi = require('spotify-web-api-node');
 var me = {};
@@ -129,10 +131,6 @@ app.get('/callback', function(req, res) {
             }, function(err) {
               console.log('Something went wrong!', err);
             });
-
-          //check the top artists around
-          var favoriteArtists = [];
-          var artistPictures = [];
 
           body["items"].forEach(function(arr) {
             artistPictures.push(arr['images'][2]['url']);
@@ -245,6 +243,19 @@ app.get('/playlist', function(req, res) {
 
 });
 
+app.get('/artists', function(req,res){
+  var items = [];
+  for (var i = 0; i < favoriteArtists.length; i++){
+    var data = { 'name': favoriteArtists[i], 'img': artistPictures[i]};
+    items.push(data);
+  }
+  console.log(items);
+  res.send({
+    'items': items
+  });
+  //create a json from these inputs with items
+});
+
 //youtube api call to get search of videos
 app.get('/youtube', function(req, res){
   var list = [];
@@ -333,8 +344,8 @@ app.get('/playlistthing', function(req, res){
 });
 
 app.get("/yt", (req, res) => {
-  console.log("HERESS:");
-  res.sendfile('../public/youtube.html');
+  // console.log("HERESS:");
+  res.sendfile('public/youtube.html', {hello:"HELLO"});
 });
 
 app.get('/', function (req, res) {
