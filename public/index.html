@@ -72,6 +72,8 @@
           <div id="user-profile"></div>
         </div>
         <div id="user-playlist"></div>
+        <div id="user-artists"></div>
+
       </div>
 
       <script id="user-profile-template" type="text/x-handlebars-template">
@@ -87,6 +89,20 @@
       <script id="user-playlist-template" type="text/x-handlebars-template">
         <div id="user-playlist">
         <h1>Please select a playlist</h1>
+        <div class="all">
+          {{#each items}}
+          <div onclick="loadPlaylist('{{tracks.href}}');" style="cursor:pointer;" class="playlist">
+              <img width="150" src="{{images.0.url}}"/>
+              <dd class="clearfix">{{name}}</dd>
+              <!-- <dt>Total Tracks</dt><dd>{{tracks.total}}</dd> -->
+          </div>
+          {{/each}}
+        </div>
+        </div>
+      </script>
+
+      <script id="user-artists-template" type="text/x-handlebars-template">
+        <div id="user-artists">
         <div class="all">
           {{#each items}}
           <div onclick="loadPlaylist('{{tracks.href}}');" style="cursor:pointer;" class="playlist">
@@ -141,6 +157,10 @@
         var userPlaylistSource = document.getElementById('user-playlist-template').innerHTML,
             userPlaylistTemplate = Handlebars.compile(userPlaylistSource),
             userPlaylistPlaceholder = document.getElementById('user-playlist');
+
+        var userArtistsSource = document.getElementById('user-artists-template').innerHTML,
+            userArtistsTemplate = Handlebars.compile(userArtistsSource),
+            userArtistsPlaceholder = document.getElementById('user-artists');
 
         var params = getHashParams();
 
