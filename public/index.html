@@ -38,14 +38,12 @@
         function youtube(){
           $.ajax({
             url: '/youtube'
-          }).done(function(data){
-            // console.log(data);
-          });;
-          //window.location.replace("youtube.html");
+          });
+          window.location.replace("/yt");
         };
 
         function showFavorite(){
-
+          $("#user-playlist").hide("slow");
           if($('#user-artists').is(':visible')){
           $("#user-artists").hide("slow");
           }
@@ -57,6 +55,7 @@
 
         function showPlaylist(){
             // console.log("here");
+            $("#user-artists").hide("slow");
             if($('#user-playlist').is(':visible')){
             $("#user-playlist").hide("slow");
             }
@@ -84,9 +83,6 @@
 
       <script id="user-profile-template" type="text/x-handlebars-template">
         <h2>Welcome, {{id}}!</h2>
-        <!-- <img src="spot.png" alt="spotify logo" width="100" height="100">
-        <img src="youtube.png" alt="youtube logo" width="250" height="166">
-        <img class="media-object" width="150" src="{{images.0.url}}" /> -->
         <h3>Choose one of the two options to generate a youtube playlist from:</h3>
         <button class ="btn btn-outline-light" font-size: "18px" onclick="showFavorite();" target="_blank">your most listened to artists</button>
         <button class="btn btn-outline-light" onclick="showPlaylist()">your spotify playlist</button>
@@ -118,6 +114,8 @@
           {{/each}}
         </div>
         </div>
+        <div style="">
+        <button class="btn btn-outline-light" onclick="">Generate!</button>
       </script>
 
 
@@ -140,7 +138,8 @@
     </div>
     <script>
       (function() {
-
+        $("#user-playlist").hide();
+        $('#user-artists').hide();
         /**
          * Obtains parameters from the hash of the URL
          * @return Object
