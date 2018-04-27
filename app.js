@@ -214,7 +214,10 @@ app.get('/callback', function(req, res) {
 
           //check the top artists around.
           var favoriteArtists = [];
+          var artistPictures = [];
+
           body["items"].forEach(function(arr) {
+            artistPictures.push(arr['images'][1]['url']);
             favoriteArtists.push(arr["name"]);
           });
 
