@@ -217,7 +217,7 @@ app.get('/callback', function(req, res) {
           var artistPictures = [];
 
           body["items"].forEach(function(arr) {
-            artistPictures.push(arr['images'][1]['url']);
+            artistPictures.push(arr['images'][2]['url']);
             favoriteArtists.push(arr["name"]);
           });
 
