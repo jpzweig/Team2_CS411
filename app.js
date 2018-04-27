@@ -131,7 +131,8 @@ app.get('/callback', function(req, res) {
             }, function(err) {
               console.log('Something went wrong!', err);
             });
-
+            favoriteArtists = [];
+            artistPictures = [];
           body["items"].forEach(function(arr) {
             artistPictures.push(arr['images'][2]['url']);
             favoriteArtists.push(arr["name"]);

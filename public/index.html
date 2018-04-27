@@ -46,6 +46,12 @@
 
         function showFavorite(){
 
+          if($('#user-artists').is(':visible')){
+          $("#user-artists").hide("slow");
+          }
+          if($('#user-artists').is(':hidden')){
+            $("#user-artists").show("slow");
+          }
 
         }
 
@@ -105,10 +111,9 @@
         <div id="user-artists">
         <div class="all">
           {{#each items}}
-          <div onclick="loadPlaylist('{{tracks.href}}');" style="cursor:pointer;" class="playlist">
-              <img width="150" src="{{images.0.url}}"/>
-              <dd class="clearfix">{{name}}</dd>
-              <!-- <dt>Total Tracks</dt><dd>{{tracks.total}}</dd> -->
+          <div class="playlist">
+            <img width="150" src="{{img}}"/>
+            <dd class="clearfix">{{name}}</dd>
           </div>
           {{/each}}
         </div>
@@ -189,6 +194,7 @@
                   $('#login').hide();
                   $('#loggedin').show();
                   $("#user-playlist").hide();
+                  $('#user-artists').hide();
                 }
             });
             //playlists of the user
@@ -198,15 +204,25 @@
                   'Authorization': 'Bearer ' + access_token
                 },
                 success: function(response) {
+
                   userPlaylistPlaceholder.innerHTML = userPlaylistTemplate(response);
                   //get the artists of the playlist chosen (first one for now)
                 }
+            });
+            $.ajax({
+                url: '/artists',
+                success: function(response) {
+                  console.log(response);
+                  userArtistsPlaceholder.innerHTML = userArtistsTemplate(response);
+                  //get the artists of the playlist chosen (first one for now)
+              }
             });
           } else {
               // render initial screen
               $('#login').show();
               $('#loggedin').hide();
               $("#user-playlist").hide();
+              $('#user-artists').hide();
           }
 
           // document.getElementById('obtain-new-token').addEventListener('click', function() {
@@ -223,40 +239,8 @@
           //     });
           //   });
           // }, false);
-
-
-          //GET RESULTS HERE
-          var el = document.getElementById('submit-button');
-          if(el){
-            console.log("hi");
-            el.addEventListener('click', function() {
-              var value = $( "input" ).val();
-              console.log(value);
-              $.ajax({
-                url: '/search',
-                data: {
-                  'q': value
-                }
-              }).done(function(data) {
-                  //Populate data to html
-                  var arr = data.body.tracks.items;
-                  //array of paragraph ids
-                  var arr_p = ["one", "two", "three", "four", "five"];
-
-                  for (i = 0; i < arr.length; i++) {
-                    //parsing the data
-                    var album = arr[i].album.name;
-                    var artist = arr[i].artists[0].name;
-                    var name = arr[i].name;
-                    var result = "<pre> Artist: " + artist + "<br> Title: " + name + "<br> Album: " + album +"</pre>";
-                    //arr_p[i] represents the id of the paragraph in html that it will get parsed into
-                    document.getElementById(arr_p[i]).innerHTML = result;
-                  }
-              });
-            }, false);
           }
-        }
-      })();
+        })();
     </script>
   </body>
 </html>
