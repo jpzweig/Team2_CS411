@@ -39,14 +39,20 @@
           $.ajax({
             url: '/youtube'
           }).done(function(data){
-            console.log(data);
+            // console.log(data);
           });;
           //window.location.replace("youtube.html");
         };
 
         function showPlaylist(){
-            console.log("here");
-            $("#user-playlist").show("slow");
+            // console.log("here");
+            if($('#user-playlist').is(':visible')){
+            $("#user-playlist").hide("slow");
+            }
+            if($('#user-playlist').is(':hidden')){
+              $("#user-playlist").show("slow");
+            }
+
         };
       </script>
 
