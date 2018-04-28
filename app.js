@@ -280,7 +280,12 @@ app.get('/youtube', function(req, res){
           list.forEach(function(element){
             search(element+ ' live concert', opts, function(err, results) {
               if(err) return console.log(err);
-              vids.push(results[0].id);
+              console.log(results);
+              var data = {
+                'id': results[0].id,
+                'title': results[0].title
+              }
+              vids.push(data);
             });
           });
         }
@@ -291,11 +296,12 @@ app.get('/youtube', function(req, res){
   x();
   var please = function(){
     console.log('sending the request');
+    console.log("the vidarray: ", vids);
     res.send({
       'ids': vids
     });
   };
-  setTimeout(function(){please()}, 500);
+  setTimeout(function(){please()}, 1000);
 });
 
 

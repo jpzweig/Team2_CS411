@@ -37,9 +37,36 @@
 
         function youtube(){
           $.ajax({
-            url: '/youtube'
+            url: '/youtube',
+          success: function(response) {
+            console.log("ajax response.result: ", response);
+            function tplawesome(e,t){
+               res=e;
+               for(var n=0;n<t.length;n++){
+            	res=res.replace(/\{\{(.*?)\}\}/g,
+                    function(e,r){
+                        return t[n][r]
+                    })
+               }
+               return res
+            }
+
+            $("#YTresults").html("");
+            $.each(response.ids, function(index, item) {
+                $.get("item.html", function(data) {
+                    $("#YTresults").append(tplawesome(data, [{"title":item.title, "videoid":item.id}]));
+                });
+            });
+            resetVideoHeight();
+
+            $(window).on("resize", resetVideoHeight);
+
+            function resetVideoHeight() {
+                $(".video").css("height", $("#results").width() * 9/16);
+            }
+          }
           });
-          window.location.replace("/yt");
+        //  window.location.replace("/yt");
         };
 
         function showFavorite(){
@@ -115,10 +142,11 @@
         </div>
         </div>
         <div style="">
-        <button class="btn btn-outline-light" onclick="">Generate!</button>
+        <button class="btn btn-outline-light" onclick="youtube()">Generate!</button>
       </script>
 
 
+      <div id="YTresults" class="YTresults"></div>
       <!-- <div class="indent">
         <h2> SEARCH TRACK </h2>
         <input type="text" id="track">
