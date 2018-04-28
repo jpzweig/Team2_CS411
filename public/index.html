@@ -68,9 +68,6 @@
         function youtube(){
           $.ajax({
             url: '/youtube',
-            data: {
-              'origin': 1
-            },
           success: function(response) {
         //    console.log("ajax response.result: ", response);
             showYT(response);
