@@ -257,19 +257,15 @@ app.get('/playlist', function(req, res) {
 
     //here is where the search request is made
     request.get(options, function(error, response, body) {
-      //console.log(response);
       if (!error && response.statusCode === 200) {
         var artists = {};
         body["items"].forEach(function(arr){
           var name = arr["track"]["artists"][0]["name"];
           artists[name] = (artists[name] || 0) + 1;
         });
-        console.log(artists);
         artistlist = sortArray (artists);
         vids = YTcall(artistlist);
         var send = function(){
-          console.log('sending the request');
-          console.log("the vidarray: ", vids);
           res.send({
             'ids': vids
           });
@@ -299,8 +295,6 @@ app.get('/artists', function(req,res){
 
 var YTcall = function(artist) {
   var vids = [];
-  //THE ARRAY OF ARTISTS HERE
-  console.log("the list: ", artist);
   var opts = {
     maxResults: 1,
     key: 'AIzaSyAOWLoz4oC_e4WPI8-fELrrnllEDXmeKRQ'
@@ -308,7 +302,6 @@ var YTcall = function(artist) {
   artist.forEach(function(element){
     search(element+ ' live concert', opts, function(err, results) {
       if(err) return console.log(err);
-      console.log(results);
       var data = {
         'id': results[0].id,
         'title': results[0].title
@@ -323,25 +316,20 @@ var YTcall = function(artist) {
 app.get('/youtube', function(req, res){
   var list = [];
   var vids = [];
-  var favartist = function (){
-    MongoClient.connect(url, function(err, db) {
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("411");
+    dbo.collection("Users").findOne({email: email}, function(err, result){
       if (err) throw err;
-      var dbo = db.db("411");
-      dbo.collection("Users").findOne({email: email}, function(err, result){
-        if (err) throw err;
-        if (result == null){
-          console.log("coudn't find the logged in user's data");
-        }else{
-          vids = YTcall(list);
-        }
-        db.close();
-      });
+      if (result == null){
+        console.log("coudn't find the logged in user's data");
+      }else{
+        vids = YTcall(result.address);
+      }
+      db.close();
     });
-  };
-
+  });
   var send = function(){
-    console.log('sending the request');
-    console.log("the vidarray: ", vids);
     res.send({
       'ids': vids
     });

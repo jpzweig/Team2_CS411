@@ -59,7 +59,12 @@
               'playlist_id': res[7]
             },
             success: function(response) {
-              showYT(response);
+              if(response.ids === []){
+                $("#YTresults").append("no live concerts found");
+              }else{
+                showYT(response);
+              }
+              setTimeout(function(){window.location.hash = '#YTresults'},300);
             }
           })
         };
@@ -68,10 +73,14 @@
         function youtube(){
           $.ajax({
             url: '/youtube',
-          success: function(response) {
-        //    console.log("ajax response.result: ", response);
-            showYT(response);
-          }
+              success: function(response) {
+                if(response.ids === []){
+                  $("#YTresults").append("<h2> no live concerts found </h2>");
+                }else{
+                  showYT(response);
+                }
+                setTimeout(function(){window.location.hash = '#YTresults'},300);
+              }
           });
         };
 
