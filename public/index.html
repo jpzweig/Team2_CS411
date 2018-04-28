@@ -30,6 +30,8 @@
             data: {
               'user_id': res[5],
               'playlist_id': res[7]
+            }, success: function(response){
+              console.log(response);
             }
           })
         };
@@ -69,20 +71,20 @@
         //  window.location.replace("/yt");
         };
 
-        function showFavorite(){
+        function showButtons(){
           $("#user-playlist").hide("slow");
-          if($('#user-artists').is(':visible')){
-          $("#user-artists").hide("slow");
+          if($('#Ebuttons').is(':visible')){
+            $('#Ebuttons').hide("slow");
+            $("#user-artists").hide("slow");
+          }else{
+            $("#Ebuttons").show("slow");
           }
-          if($('#user-artists').is(':hidden')){
-            $("#user-artists").show("slow");
-          }
-
         }
-
         function showPlaylist(){
             // console.log("here");
             $("#user-artists").hide("slow");
+            $("#Ebuttons").hide("slow");
+            $("#generate_btn").hide("slow");
             if($('#user-playlist').is(':visible')){
             $("#user-playlist").hide("slow");
             }
@@ -104,14 +106,26 @@
           <div id="user-profile"></div>
         </div>
         <div id="user-playlist"></div>
+        <div id="Ebuttons">
+          <div class="three_buttons">
+            Choose one of these options:
+            <button type="button" class="btn btn-outline-light btn-sm" onclick="showFavorite(0)">most recent</button>
+            <button type="button" class="btn btn-outline-light btn-sm" onclick="showFavorite(1)">somehow recent</button>
+            <button type="button" class="btn btn-outline-light btn-sm" onclick="showFavorite(2)">least recent</button>
+          </div>
+        </div>
         <div id="user-artists"></div>
-
+        <div id="generate_btn">
+          <div class="generate_btn">
+            <button class="btn btn-outline-light" onclick="">Generate!</button>
+          </div>
+        </div>
       </div>
 
       <script id="user-profile-template" type="text/x-handlebars-template">
         <h2>Welcome, {{id}}!</h2>
         <h3>Choose one of the two options to generate a youtube playlist from:</h3>
-        <button class ="btn btn-outline-light" font-size: "18px" onclick="showFavorite();" target="_blank">your most listened to artists</button>
+        <button class ="btn btn-outline-light" font-size: "18px" onclick="showButtons()" target="_blank">your most listened to artists</button>
         <button class="btn btn-outline-light" onclick="showPlaylist()">your spotify playlist</button>
       </script>
 
@@ -120,15 +134,24 @@
         <h1>Please select a playlist</h1>
         <div class="all">
           {{#each items}}
-          <div onclick="loadPlaylist('{{tracks.href}}');" style="cursor:pointer;" class="playlist">
+          <div class="smh">
+            <div onclick="loadPlaylist('{{tracks.href}}');" style="cursor:pointer;" class="playlist">
+              <div class="img__description">select</div>
               <img width="150" src="{{images.0.url}}"/>
-              <dd class="clearfix">{{name}}</dd>
-              <!-- <dt>Total Tracks</dt><dd>{{tracks.total}}</dd> -->
+              <div class="text1">{{name}}</div>
+            </div>
           </div>
           {{/each}}
         </div>
         </div>
       </script>
+
+      <script id="Ebuttons-template" type="text/x-handlebars-template">
+        <div id="Ebuttons">
+          <div class="three_buttons">
+          </div>
+        </div>
+    </script>
 
       <script id="user-artists-template" type="text/x-handlebars-template">
         <div id="user-artists">
@@ -136,11 +159,12 @@
           {{#each items}}
           <div class="playlist">
             <img width="150" src="{{img}}"/>
-            <dd class="clearfix">{{name}}</dd>
+            <div class="text1">{{name}}</div>
           </div>
           {{/each}}
         </div>
         </div>
+<<<<<<< Updated upstream
         <div style="">
         <button class="btn btn-outline-light" onclick="youtube()">Generate!</button>
       </script>
@@ -160,6 +184,10 @@
         </div>
       </div> -->
 
+=======
+      </script>
+
+>>>>>>> Stashed changes
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
     <div class="footer1">
       Spring 2018: CS411 Project
@@ -168,6 +196,8 @@
       (function() {
         $("#user-playlist").hide();
         $('#user-artists').hide();
+        $('#Ebuttons').hide();
+        $("#generate_btn").hide();
         /**
          * Obtains parameters from the hash of the URL
          * @return Object
@@ -190,10 +220,6 @@
             userPlaylistTemplate = Handlebars.compile(userPlaylistSource),
             userPlaylistPlaceholder = document.getElementById('user-playlist');
 
-        var userArtistsSource = document.getElementById('user-artists-template').innerHTML,
-            userArtistsTemplate = Handlebars.compile(userArtistsSource),
-            userArtistsPlaceholder = document.getElementById('user-artists');
-
         var params = getHashParams();
 
         var access_token = params.access_token,
@@ -204,12 +230,6 @@
           alert('There was an error during the authentication');
         } else {
           if (access_token) {
-            // render oauth info
-            // oauthPlaceholder.innerHTML = oauthTemplate({
-            //   access_token: access_token,
-            //   refresh_token: refresh_token
-            // });
-
             $.ajax({
                 url: 'https://api.spotify.com/v1/me',
                 headers: {
@@ -220,8 +240,8 @@
                   userProfilePlaceholder.innerHTML = userProfileTemplate(response);
                   $('#login').hide();
                   $('#loggedin').show();
-                  $("#user-playlist").hide();
-                  $('#user-artists').hide();
+                  // $("#user-playlist").hide();
+                  // $('#user-artists').hide();
                 }
             });
             //playlists of the user
@@ -231,43 +251,35 @@
                   'Authorization': 'Bearer ' + access_token
                 },
                 success: function(response) {
-
                   userPlaylistPlaceholder.innerHTML = userPlaylistTemplate(response);
-                  //get the artists of the playlist chosen (first one for now)
                 }
-            });
-            $.ajax({
-                url: '/artists',
-                success: function(response) {
-                  console.log(response);
-                  userArtistsPlaceholder.innerHTML = userArtistsTemplate(response);
-                  //get the artists of the playlist chosen (first one for now)
-              }
             });
           } else {
               // render initial screen
               $('#login').show();
               $('#loggedin').hide();
-              $("#user-playlist").hide();
-              $('#user-artists').hide();
+              // $("#user-playlist").hide();
+              // $('#user-artists').hide();
           }
+        }
+      })();
+      var userArtistsSource = document.getElementById('user-artists-template').innerHTML,
+          userArtistsTemplate = Handlebars.compile(userArtistsSource),
+          userArtistsPlaceholder = document.getElementById('user-artists');
 
-          // document.getElementById('obtain-new-token').addEventListener('click', function() {
-          //   $.ajax({
-          //     url: '/refresh_token',
-          //     data: {
-          //       'refresh_token': refresh_token
-          //     }
-          //   }).done(function(data) {
-          //     access_token = data.access_token;
-          //     oauthPlaceholder.innerHTML = oauthTemplate({
-          //       access_token: access_token,
-          //       refresh_token: refresh_token
-          //     });
-          //   });
-          // }, false);
+      function showFavorite(num){
+        $.ajax({
+          url: '/differentArtist',
+          data:{
+            range: num
+          },success: function(response) {
+            console.log(response);
+            userArtistsPlaceholder.innerHTML = userArtistsTemplate(response);
           }
-        })();
+        });
+        $("#user-artists").show("slow");
+        setTimeout(function(){$("#generate_btn").show();}, 1000);
+      }
     </script>
   </body>
 </html>

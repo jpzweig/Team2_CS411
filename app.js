@@ -189,29 +189,6 @@ app.get('/callback', function(req, res) {
   }
 });
 
-//has q as param req aka req.query.q
-app.get('/search', function(req, res) {
-    //setting up the search parameters
-    var options = {
-      url: 'https://api.spotify.com/v1/search?type=track&q=' + req.query.q +'&limit=5',
-      headers: { 'Authorization': 'Bearer ' + accessGlobal },
-      json: true
-    };
-    //here is where the search request is made
-    request.get(options, function(error, response, body) {
-      //console.log(response);
-      if (!error && response.statusCode === 200) {
-        res.send({
-          'body': body
-        });
-      }else{
-        res.send({
-          'body': 'something went wrong'
-        });
-      }
-    });
-});
-
 //has user_id and playlist_id as params
 //it gets the playlists artists and the number of times they appear
 app.get('/playlist', function(req, res) {
@@ -231,7 +208,7 @@ app.get('/playlist', function(req, res) {
           var name = arr["track"]["artists"][0]["name"];
           artists[name] = (artists[name] || 0) + 1;
         });
-        console.log(artists);
+        // console.log(artists);
         res.send({
           'artists': artists
         });
@@ -250,7 +227,7 @@ app.get('/artists', function(req,res){
     var data = { 'name': favoriteArtists[i], 'img': artistPictures[i]};
     items.push(data);
   }
-  console.log(items);
+  // console.log(items);
   res.send({
     'items': items
   });
@@ -303,6 +280,51 @@ app.get('/youtube', function(req, res){
   };
   setTimeout(function(){please()}, 1000);
 });
+
+app.get('/differentArtist', function(req, res){
+
+  var time_range = ['short_term','medium_term','long_term'];
+  var options = {
+    url: 'https://api.spotify.com/v1/me/top/artists?time_range='+time_range[req.query.range],
+    headers: { 'Authorization': 'Bearer ' + accessGlobal },
+    json: true
+  };
+  var items = [];
+  // use the access token to access the Spotify Web API
+  request.get(options, function(error, response, body) {
+
+    favoriteArtists = [];
+    artistPictures = [];
+
+    body["items"].forEach(function(arr) {
+      artistPictures.push(arr['images'][2]['url']);
+      favoriteArtists.push(arr["name"]);
+    });
+
+    var run = function(){
+      MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("411");
+        dbo.collection("Users").findOneAndUpdate({email: email}, {$set: {address: favoriteArtists}});
+      });
+    };
+    setTimeout(function(){run()}, 500);
+
+    for (var i = 0; i < favoriteArtists.length; i++){
+      var data = { 'name': favoriteArtists[i], 'img': artistPictures[i]};
+      items.push(data);
+    }
+
+  });
+
+  setTimeout(function(){
+    res.send({
+      'items': items
+    });
+  }, 500);
+
+});
+
 
 
 app.get('/playlistthing', function(req, res){

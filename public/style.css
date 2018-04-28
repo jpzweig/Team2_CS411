@@ -47,6 +47,15 @@ body{
   border-color: #ffff !important;
 }
 
+.three_buttons{
+  margin: 2%;
+}
+
+.Ebuttons .btn{
+  font-size: 18px !important;
+  border-color: #ffff !important;
+}
+
 .footer1 {
     position: fixed;
     right:0;
@@ -77,6 +86,7 @@ body{
   float: left;
   left: -30%;
   text-align: left;
+  opacity: 0.5;
 }
 .all{
   text-align: center;
@@ -84,6 +94,12 @@ body{
   height: 100%;
   max-width: 9999px;
   margin-left: 100px;
+}
+
+.generate_btn{
+  width: 100%;
+  text-align: center;
+  display: flow-root;
 }
 
 .buttona{
@@ -113,6 +129,40 @@ body{
     color: white;
 }
 
+
 .YTresults{
   text-indent: 40px
+}
+
+.playlist img{
+  height: 155px;
+  width: 155px;
+}
+
+.text1{
+  text-align: center;
+  position:relative;
+}
+
+.smh .playlist:hover .img__description {
+  visibility: visible;
+  opacity: 1;
+}
+
+.smh .playlist:hover{
+  opacity: 1;
+}
+
+.img__description {
+  background-color: black;
+  padding:2px;
+  text-align:center;
+  text-align: center;
+  margin: 65px;
+  margin-right: 50px;
+  margin-left: 60px;
+  position: absolute;
+  color: #fff;
+  visibility: hidden;
+  opacity: 0;
 }
