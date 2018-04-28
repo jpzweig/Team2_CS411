@@ -189,10 +189,66 @@ app.get('/callback', function(req, res) {
   }
 });
 
+//has q as param req aka req.query.q
+app.get('/search', function(req, res) {
+    //setting up the search parameters
+    var options = {
+      url: 'https://api.spotify.com/v1/search?type=track&q=' + req.query.q +'&limit=5',
+      headers: { 'Authorization': 'Bearer ' + accessGlobal },
+      json: true
+    };
+    //here is where the search request is made
+    request.get(options, function(error, response, body) {
+      //console.log(response);
+      if (!error && response.statusCode === 200) {
+        res.send({
+          'body': body
+        });
+      }else{
+        res.send({
+          'body': 'something went wrong'
+        });
+      }
+    });
+});
+
+var sortArray = function (keyval) {
+  // convert object into array
+	var sortable = [];
+  var array = [];
+	for(var key in keyval)
+		if(keyval.hasOwnProperty(key))
+			sortable.push([key, keyval[key]]); // each item is an array in format [key, value]
+
+	// sort items by value
+	sortable.sort(function(a, b)
+	{
+	  return a[1]-b[1]; // compare numbers
+	});
+
+  console.log("sortable before reverse", sortable);
+
+  sortable.reverse();
+
+  console.log("sortable after reverse", sortable);
+
+  console.log("sample object key", sortable[0][0]);
+
+  for (var i=0; i < 20; i++) {
+    array.push(sortable[i][0]);
+  }
+
+  console.log("length of array from sortable", array.length);
+  console.log("array from sortable", array);
+
+	return array;
+}
+
 //has user_id and playlist_id as params
 //it gets the playlists artists and the number of times they appear
 app.get('/playlist', function(req, res) {
-
+    var artistlist = [];
+    var vids = [];
     var options = {
       url: 'https://api.spotify.com/v1/users/' + req.query.user_id + '/playlists/' + req.query.playlist_id + '/tracks',
       headers: { 'Authorization': 'Bearer ' + accessGlobal },
@@ -208,10 +264,17 @@ app.get('/playlist', function(req, res) {
           var name = arr["track"]["artists"][0]["name"];
           artists[name] = (artists[name] || 0) + 1;
         });
-        // console.log(artists);
-        res.send({
-          'artists': artists
-        });
+        console.log(artists);
+        artistlist = sortArray (artists);
+        vids = YTcall(artistlist);
+        var send = function(){
+          console.log('sending the request');
+          console.log("the vidarray: ", vids);
+          res.send({
+            'ids': vids
+          });
+        };
+        setTimeout(function(){send()}, 1000);
       }else{
         res.send({
           'body': 'something went wrong'
@@ -234,11 +297,33 @@ app.get('/artists', function(req,res){
   //create a json from these inputs with items
 });
 
+var YTcall = function(artist) {
+  var vids = [];
+  //THE ARRAY OF ARTISTS HERE
+  console.log("the list: ", artist);
+  var opts = {
+    maxResults: 1,
+    key: 'AIzaSyAOWLoz4oC_e4WPI8-fELrrnllEDXmeKRQ'
+  };
+  artist.forEach(function(element){
+    search(element+ ' live concert', opts, function(err, results) {
+      if(err) return console.log(err);
+      console.log(results);
+      var data = {
+        'id': results[0].id,
+        'title': results[0].title
+      }
+      vids.push(data);
+    });
+  });
+  return vids;
+};
+
 //youtube api call to get search of videos
 app.get('/youtube', function(req, res){
   var list = [];
   var vids = [];
-  var x = function (){
+  var favartist = function (){
     MongoClient.connect(url, function(err, db) {
       if (err) throw err;
       var dbo = db.db("411");
@@ -247,38 +332,21 @@ app.get('/youtube', function(req, res){
         if (result == null){
           console.log("coudn't find the logged in user's data");
         }else{
-          //THE ARRAY OF ARTISTS HERE
-          list = result.address;
-          console.log("the list: ", list);
-          var opts = {
-            maxResults: 1,
-            key: 'AIzaSyAOWLoz4oC_e4WPI8-fELrrnllEDXmeKRQ'
-          };
-          list.forEach(function(element){
-            search(element+ ' live concert', opts, function(err, results) {
-              if(err) return console.log(err);
-              console.log(results);
-              var data = {
-                'id': results[0].id,
-                'title': results[0].title
-              }
-              vids.push(data);
-            });
-          });
+          vids = YTcall(list);
         }
         db.close();
       });
     });
   };
-  x();
-  var please = function(){
+
+  var send = function(){
     console.log('sending the request');
     console.log("the vidarray: ", vids);
     res.send({
       'ids': vids
     });
   };
-  setTimeout(function(){please()}, 1000);
+  setTimeout(function(){send()}, 1000);
 });
 
 app.get('/differentArtist', function(req, res){
