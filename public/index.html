@@ -66,9 +66,9 @@
             function resetVideoHeight() {
                 $(".video").css("height", $("#results").width() * 9/16);
             }
+            setTimeout(function(){window.location.hash = '#YTresults'},300);
           }
           });
-        //  window.location.replace("/yt");
         };
 
         function showButtons(){
@@ -117,9 +117,13 @@
         <div id="user-artists"></div>
         <div id="generate_btn">
           <div class="generate_btn">
-            <button class="btn btn-outline-light" onclick="">Generate!</button>
+            <button class="btn btn-outline-light" onclick="youtube()">Generate!</button>
           </div>
         </div>
+        <div id="YTresults">
+          <div class="YTresults"></div>
+        </div>
+        <button onclick="topFunction()" class="btn btn-outline-light btn-sm" id="myBtn" title="Go to top">Top</button>
       </div>
 
       <script id="user-profile-template" type="text/x-handlebars-template">
@@ -155,15 +159,16 @@
 
       <script id="user-artists-template" type="text/x-handlebars-template">
         <div id="user-artists">
-        <div class="all">
-          {{#each items}}
-          <div class="playlist">
-            <img width="150" src="{{img}}"/>
-            <div class="text1">{{name}}</div>
+          <div class="all">
+            {{#each items}}
+            <div class="playlist">
+              <img width="150" src="{{img}}"/>
+              <div class="text1">{{name}}</div>
+            </div>
+            {{/each}}
           </div>
-          {{/each}}
         </div>
-        </div>
+<<<<<<< Updated upstream
         <div style="">
         <button class="btn btn-outline-light" onclick="youtube()">Generate!</button>
       </script>
@@ -184,6 +189,10 @@
       </div> -->
     </script>
 
+=======
+      </script>
+
+>>>>>>> Stashed changes
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
     <div class="footer1">
       Spring 2018: CS411 Project
@@ -275,6 +284,24 @@
         });
         $("#user-artists").show("slow");
         setTimeout(function(){$("#generate_btn").show();}, 1000);
+      }
+
+      //scroll thing
+      // When the user scrolls down 20px from the top of the document, show the button
+      window.onscroll = function() {scrollFunction()};
+
+      function scrollFunction() {
+          if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+              document.getElementById("myBtn").style.display = "block";
+          } else {
+              document.getElementById("myBtn").style.display = "none";
+          }
+      }
+
+      // When the user clicks on the button, scroll to the top of the document
+      function topFunction() {
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
       }
     </script>
   </body>
