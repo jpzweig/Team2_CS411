@@ -22,6 +22,33 @@
       </script>
     </div>
       <script>
+        function showYT(response){
+          function tplawesome(e,t){
+             res=e;
+             for(var n=0;n<t.length;n++){
+            res=res.replace(/\{\{(.*?)\}\}/g,
+                  function(e,r){
+                      return t[n][r]
+                  })
+             }
+             return res
+          }
+
+          $("#YTresults").html("");
+          $.each(response.ids, function(index, item) {
+              $.get("item.html", function(data) {
+                  $("#YTresults").append(tplawesome(data, [{"title":item.title, "videoid":item.id}]));
+              });
+          });
+          // resetVideoHeight();
+          //
+          // $(window).on("resize", resetVideoHeight);
+          //
+          // function resetVideoHeight() {
+          //     $(".video").css("height", $("#results").width() * 9/16);
+          // }
+        };
+
         function loadPlaylist(url_call){
           var res = url_call.split("/");
           console.log(res);
@@ -30,6 +57,9 @@
             data: {
               'user_id': res[5],
               'playlist_id': res[7]
+            },
+            success: function(response) {
+              showYT(response);
             }
           })
         };
@@ -38,32 +68,12 @@
         function youtube(){
           $.ajax({
             url: '/youtube',
+            data: {
+              'origin': 1
+            },
           success: function(response) {
-            console.log("ajax response.result: ", response);
-            function tplawesome(e,t){
-               res=e;
-               for(var n=0;n<t.length;n++){
-            	res=res.replace(/\{\{(.*?)\}\}/g,
-                    function(e,r){
-                        return t[n][r]
-                    })
-               }
-               return res
-            }
-
-            $("#YTresults").html("");
-            $.each(response.ids, function(index, item) {
-                $.get("item.html", function(data) {
-                    $("#YTresults").append(tplawesome(data, [{"title":item.title, "videoid":item.id}]));
-                });
-            });
-            resetVideoHeight();
-
-            $(window).on("resize", resetVideoHeight);
-
-            function resetVideoHeight() {
-                $(".video").css("height", $("#results").width() * 9/16);
-            }
+        //    console.log("ajax response.result: ", response);
+            showYT(response);
           }
           });
         //  window.location.replace("/yt");
