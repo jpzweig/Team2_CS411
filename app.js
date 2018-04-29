@@ -1,10 +1,7 @@
 /**
- * This is an example of a basic node.js script that performs
- * the Authorization Code oAuth2 flow to authenticate against
- * the Spotify Accounts.
+ * This is our backend code
  *
- * For more information, read
- * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow
+ * Credits: JMPerez for Spotify OAuth code
  */
 
 var express = require('express'); // Express web server framework
@@ -59,7 +56,7 @@ var app = express();
 app.use(express.static(__dirname + '/public'))
    .use(cookieParser());
 
-//some html rendering thing
+//redirect to Spotify login page
 app.get('/login', function(req, res) {
 
   var state = generateRandomString(16);
@@ -77,6 +74,7 @@ app.get('/login', function(req, res) {
     }));
 });
 
+// Show user's Spotify display name
 app.get('/info', function(req,res){
 
   var options= {
@@ -211,30 +209,31 @@ app.get('/callback', function(req, res) {
   }
 });
 
-//has q as param req aka req.query.q
-app.get('/search', function(req, res) {
-    //setting up the search parameters
-    var options = {
-      url: 'https://api.spotify.com/v1/search?type=track&q=' + req.query.q +'&limit=5',
-      headers: { 'Authorization': 'Bearer ' + accessGlobal },
-      json: true
-    };
-    //here is where the search request is made
-    request.get(options, function(error, response, body) {
-      //console.log(response);
-      if (!error && response.statusCode === 200) {
-        res.send({
-          'body': body
-        });
-      }else{
-        res.send({
-          'body': 'something went wrong'
-        });
-      }
-    });
-});
+// //has q as param req aka req.query.q
+// app.get('/search', function(req, res) {
+//     //setting up the search parameters
+//     var options = {
+//       url: 'https://api.spotify.com/v1/search?type=track&q=' + req.query.q +'&limit=5',
+//       headers: { 'Authorization': 'Bearer ' + accessGlobal },
+//       json: true
+//     };
+//     //here is where the search request is made
+//     request.get(options, function(error, response, body) {
+//       //console.log(response);
+//       if (!error && response.statusCode === 200) {
+//         res.send({
+//           'body': body
+//         });
+//       }else{
+//         res.send({
+//           'body': 'something went wrong'
+//         });
+//       }
+//     });
+// });
 
-// Sort artists array by the number of songs they have on the playlist (descending order)
+// Sort artist array based on the number of times they appear in
+// the playlist (descending order)
 var sortArray = function (keyval) {
 	var sortable = [];
   var array = [];
@@ -308,6 +307,7 @@ app.get('/playlistId', function(req, res) {
 
 });
 
+// gets user's Spotify playlists
 app.get('/playlists', function(req, res){
   var options = {
     url: 'https://api.spotify.com/v1/me/playlists',
@@ -328,6 +328,7 @@ app.get('/playlists', function(req, res){
   });
 });
 
+// gets user's favorite Artists from Spotify
 app.get('/artists', function(req,res){
   var items = [];
   for (var i = 0; i < favoriteArtists.length; i++){
@@ -341,6 +342,7 @@ app.get('/artists', function(req,res){
   //create a json from these inputs with items
 });
 
+// Youtube API call
 var YTcall = function(artist) {
   var vids = [];
   var opts = {
@@ -360,7 +362,8 @@ var YTcall = function(artist) {
   return vids;
 };
 
-//youtube api call to get search of videos
+// extract user's favorite artist from database
+// and do a youtube api call
 app.get('/youtube', function(req, res){
   var list = [];
   var vids = [];
@@ -385,6 +388,7 @@ app.get('/youtube', function(req, res){
   setTimeout(function(){send()}, 1000);
 });
 
+// get user's favoirte artists from different time periods
 app.get('/differentArtist', function(req, res){
 
   var time_range = ['short_term','medium_term','long_term'];
@@ -429,10 +433,10 @@ app.get('/differentArtist', function(req, res){
 
 });
 
-app.get("/yt", (req, res) => {
-  // console.log("HERESS:");
-  res.sendfile('public/youtube.html', {hello:"HELLO"});
-});
+// app.get("/yt", (req, res) => {
+//   // console.log("HERESS:");
+//   res.sendfile('public/youtube.html', {hello:"HELLO"});
+// });
 
 app.get('/', function (req, res) {
   res.render('home', {title: "asdfasdfasdf"});
