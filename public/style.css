@@ -7,7 +7,7 @@
 
 body{
   text-align: center;
-  font-family: 'Gugi', cursive !important;
+  /* font-family: 'Gugi', cursive !important; */
   color: #ffff !important;
 }
 
@@ -34,6 +34,7 @@ body{
 
 .body-login{
   margin: 20% auto;
+  margin-top: 15% !important;
   width: 80%;
   overflow: hidden;
 }

@@ -77,6 +77,28 @@ app.get('/login', function(req, res) {
     }));
 });
 
+app.get('/info', function(req,res){
+
+  var options= {
+    url: 'https://api.spotify.com/v1/me',
+    headers: { 'Authorization': 'Bearer ' + accessGlobal },
+    json: true
+  };
+
+  request.get(options, function(error, response, body) {
+    //console.log(response);
+    if (!error && response.statusCode === 200) {
+      res.send({
+        'body': body
+      });
+    }else{
+      res.send({
+        'body': 'something went wrong'
+      });
+    }
+  });
+});
+
 app.get('/callback', function(req, res) {
 
   // your application requests refresh and access tokens
@@ -252,7 +274,7 @@ var sortArray = function (keyval) {
 
 //has user_id and playlist_id as params
 //it gets the playlists artists and the number of times they appear
-app.get('/playlist', function(req, res) {
+app.get('/playlistId', function(req, res) {
     var artistlist = [];
     var vids = [];
     var options = {
@@ -284,6 +306,26 @@ app.get('/playlist', function(req, res) {
       }
     });
 
+});
+
+app.get('/playlists', function(req, res){
+  var options = {
+    url: 'https://api.spotify.com/v1/me/playlists',
+    headers: { 'Authorization': 'Bearer ' + accessGlobal },
+    json: true
+  }
+
+  request.get(options, function(error, response, body){
+    if (!error && response.statusCode === 200) {
+      res.send({
+        'body': body
+      });
+    }else{
+      res.send({
+        'body': 'something went wrong'
+      });
+    }
+  });
 });
 
 app.get('/artists', function(req,res){
@@ -385,53 +427,6 @@ app.get('/differentArtist', function(req, res){
     });
   }, 500);
 
-});
-
-
-
-app.get('/playlistthing', function(req, res){
-  // var sampleClient = new SampleClient();
-  // // initialize the Youtube API library
-  // const youtube = google.youtube({
-  //   version: 'v3',
-  //   auth: sampleClient.oAuth2Client
-  // });
-  //
-  // // a very simple example of getting data from a playlist
-  // function runSample () {
-  //   // the first query will return data with an etag
-  //   const res = getPlaylistData(null);
-  //   const etag = res.data.etag;
-  //   console.log(`etag: ${etag}`);
-  //
-  //   // the second query will (likely) return no data, and an HTTP 304
-  //   // since the If-None-Match header was set with a matching eTag
-  //   const res2 = getPlaylistData(etag);
-  //   console.log(res2.status);
-  // }
-  //
-  // function getPlaylistData (etag) {
-  //   // Create custom HTTP headers for the request to enable use of eTags
-  //   const headers = {};
-  //   if (etag) {
-  //     headers['If-None-Match'] = etag;
-  //   }
-  //   const res = youtube.playlists.list({
-  //     part: 'id,snippet',
-  //     id: 'PLIivdWyY5sqIij_cgINUHZDMnGjVx3rxi',
-  //     headers: headers
-  //   });
-  //   console.log('Status code: ' + res.status);
-  //   console.log(res.data);
-  //   return res;
-  // }
-  // const scopes = [
-  //   'https://www.googleapis.com/auth/youtube'
-  // ];
-  //
-  // sampleClient.authenticate(scopes)
-  //   .then(c => runSample())
-  //   .catch(console.error);
 });
 
 app.get("/yt", (req, res) => {

@@ -46,7 +46,7 @@
           var res = url_call.split("/");
           console.log(res);
           $.ajax({
-            url: '/playlist',
+            url: '/playlistId',
             data: {
               'user_id': res[5],
               'playlist_id': res[7]
@@ -56,15 +56,9 @@
                 $("#YTresults").append("<h2> no live concerts found </h2>");
               }else{
                 showYT(response);
-                // var str =response.ids[0].id;
-                // for (var i= 1; i<response.ids.length; i++){
-                //   str += "," + response.ids[i].id;
-                // }
-                // console.log(str);
-                // var iframe = " <iframe width=\"720\" height=\"405\" src=\"https://www.youtube.com/embed/VIDEO_ID?playlist= " + str + " frameborder=\"0\" allowfullscreen> </iframe>"
-
               }
-              $("#YTresults").append(iframe);
+              setTimeout(function(){window.location.hash = '#YTresults'},300);
+              // $("#YTresults").append(iframe);
             }
           })
         };
@@ -94,7 +88,6 @@
           }
         }
         function showPlaylist(){
-            // console.log("here");
             $("#user-artists").hide("slow");
             $("#Ebuttons").hide("slow");
             $("#generate_btn").hide("slow");
@@ -227,13 +220,9 @@
         } else {
           if (access_token) {
             $.ajax({
-                url: 'https://api.spotify.com/v1/me',
-                headers: {
-                  'Authorization': 'Bearer ' + access_token
-                },
+                url: '/info',
                 success: function(response) {
-                  console.log(response);
-                  userProfilePlaceholder.innerHTML = userProfileTemplate(response);
+                  userProfilePlaceholder.innerHTML = userProfileTemplate(response.body);
                   $('#login').hide();
                   $('#loggedin').show();
                   // $("#user-playlist").hide();
@@ -242,20 +231,15 @@
             });
             //playlists of the user
             $.ajax({
-                url: 'https://api.spotify.com/v1/me/playlists',
-                headers: {
-                  'Authorization': 'Bearer ' + access_token
-                },
+                url: '/playlists',
                 success: function(response) {
-                  userPlaylistPlaceholder.innerHTML = userPlaylistTemplate(response);
+                  userPlaylistPlaceholder.innerHTML = userPlaylistTemplate(response.body);
                 }
             });
           } else {
               // render initial screen
               $('#login').show();
               $('#loggedin').hide();
-              // $("#user-playlist").hide();
-              // $('#user-artists').hide();
           }
         }
       })();
@@ -282,7 +266,7 @@
       window.onscroll = function() {scrollFunction()};
 
       function scrollFunction() {
-          if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+          if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) {
               document.getElementById("myBtn").style.display = "block";
           } else {
               document.getElementById("myBtn").style.display = "none";
