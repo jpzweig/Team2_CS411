@@ -212,13 +212,13 @@ app.get('/search', function(req, res) {
     });
 });
 
+// Sort artists array by the number of songs they have on the playlist (descending order)
 var sortArray = function (keyval) {
-  // convert object into array
 	var sortable = [];
   var array = [];
 	for(var key in keyval)
 		if(keyval.hasOwnProperty(key))
-			sortable.push([key, keyval[key]]); // each item is an array in format [key, value]
+			sortable.push([key, keyval[key]]);
 
 	// sort items by value
 	sortable.sort(function(a, b)
@@ -234,8 +234,14 @@ var sortArray = function (keyval) {
 
   console.log("sample object key", sortable[0][0]);
 
-  for (var i=0; i < 20; i++) {
-    array.push(sortable[i][0]);
+  var counter = sortable.length;
+  if (sortable.length > 20) {
+      counter = 20;
+  }
+  if (sortable.length > 0) {
+    for (var i=0; i < counter; i++) {
+      array.push(sortable[i][0]);
+    }
   }
 
   console.log("length of array from sortable", array.length);
