@@ -53,11 +53,18 @@
             },
             success: function(response) {
               if(response.ids === []){
-                $("#YTresults").append("no live concerts found");
+                $("#YTresults").append("<h2> no live concerts found </h2>");
               }else{
                 showYT(response);
+                // var str =response.ids[0].id;
+                // for (var i= 1; i<response.ids.length; i++){
+                //   str += "," + response.ids[i].id;
+                // }
+                // console.log(str);
+                // var iframe = " <iframe width=\"720\" height=\"405\" src=\"https://www.youtube.com/embed/VIDEO_ID?playlist= " + str + " frameborder=\"0\" allowfullscreen> </iframe>"
+
               }
-              setTimeout(function(){window.location.hash = '#YTresults'},300);
+              $("#YTresults").append(iframe);
             }
           })
         };
