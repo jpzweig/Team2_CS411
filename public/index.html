@@ -48,6 +48,7 @@
         };
 
         function loadPlaylist(url_call){
+          $("#YTresults").show();
           var res = url_call.split("/");
           console.log(res);
           $.ajax({
@@ -70,6 +71,7 @@
 
 
         function youtube(){
+          $("#YTresults").show();
           $.ajax({
             url: '/youtube',
               success: function(response) {
@@ -84,6 +86,7 @@
         };
 
         function showButtons(){
+          $("#YTresults").hide();
           $("#user-playlist").hide("slow");
           if($('#Ebuttons').is(':visible')){
             $('#Ebuttons').hide("slow");
@@ -92,53 +95,116 @@
             $("#Ebuttons").show("slow");
           }
         }
+
         function showPlaylist(){
-            $("#user-artists").hide("slow");
-            $("#Ebuttons").hide("slow");
-            $("#generate_btn").hide("slow");
-            if($('#user-playlist').is(':visible')){
+          $("#YTresults").hide();
+          $("#user-artists").hide("slow");
+          $("#Ebuttons").hide("slow");
+          $("#generate_btn").hide("slow");
+          if($('#user-playlist').is(':visible')){
             $("#user-playlist").hide("slow");
-            }
-            if($('#user-playlist').is(':hidden')){
-              $("#user-playlist").show("slow");
-            }
+          }else{
+            $("#user-playlist").show("slow");
+          }
 
         };
       </script>
 
       <div class="body-login">
         <div id="login">
-          <img src="spot_play.png" alt="play button" width="250" height="250">
-          <h1 style="font-size:80px"><b>Live concerts. Chosen from Spotify.<b></h1>
-          <br>
-          <h1 style="font-size:30px">Enjoy a live concert playlist from favorite artists on Spotify. No need to find specific performances on YouTube. We'll handle everything for you. Click below to get started!</h1>
-          <br>
-          <div class="padd">
-            <a href="/login" class="btn btn-outline-light">Log in with Spotify</a>
+
+          <div id="content">
+            <img src="spot_play.png" alt="play button" width="250" height="250">
+            <h1 style="font-size:80px"><b>Live concerts. <br>Chosen from Spotify.</b></h1>
+          </div>
+
+          <div id="content">
+            <h1 style="font-size:30px">Enjoy a live concert playlist from favorite artists on Spotify.<br> No need to find specific performances on YouTube. We'll handle everything for you. Click below to get started!</h1>
+            <div class="padd">
+              <a href="/login" class="btn btn-outline-light">Log in with Spotify</a>
+            </div>
+          </div>
+
+          <div id="content">
+            <div class="footer1">
+              <div>
+                <center><h1 style="font-size: 60px"><b>Developers</b></h1></center>
+              </div>
+
+              <div class="card">
+                <img src="jill.jpg" alt="jill" style="width:100%">
+                <h1 style="color: black">Jill <br />
+                Hbh</h1>
+                <p class="title">Developer</p>
+                <p style="color: black">Boston University</p>
+                <div style="margin: 24px 0;">
+                  <a href="https://www.linkedin.com/in/jillyan-huibonhoa-1952628a/"><i class="fa fa-linkedin"></i></a>
+                  <a href="https://www.facebook.com/jillyan.hbh"><i class="fa fa-facebook"></i></a>
+                </div>
+              </div>
+
+              <div class="card">
+                <img src="sarah.jpg" alt="sarah" style="width:100%">
+                <h1 style="color: black" style = "font-size: 9px">Sarah M'Saad</h1>
+                <p class="title">Developer</p>
+                <p style="color: black">Boston University</p>
+                <div style="margin: 24px 0;">
+                  <a href="https://www.linkedin.com/in/sarah-msaad/"><i class="fa fa-linkedin"></i></a>
+                  <a href="https://www.facebook.com/sarah.msaad.71"><i class="fa fa-facebook"></i></a>
+                </div>
+              </div>
+
+              <div class="card">
+                <img src="nathan.jpg" alt="nathan" style="width:100%">
+                <h1 style="color: black">Nathan <br />
+                Wu</h1>
+                <p class="title">Developer</p>
+                <p style="color: black">Boston University</p>
+                <div style="margin: 24px 0;">
+                  <a href="https://www.linkedin.com/in/nathanjwu/"><i class="fa fa-linkedin"></i></a>
+                  <a href="https://www.facebook.com/search/top/?q=nathan%20wu"><i class="fa fa-facebook"></i></a>
+                </div>
+              </div>
+
+              <div class="card">
+                <img src="jacob.jpg" alt="jacob" style="width:100%">
+                <h1 style="color: black">Jacob Zweig</h1>
+                <p class="title">Developer</p>
+                <p style="color: black">Boston University</p>
+                <div style="margin: 24px 0;">
+                  <a href="https://www.linkedin.com/in/jacob-zweig-686331122/"><i class="fa fa-linkedin"></i></a>
+                  <a href="https://www.facebook.com/jacob.zweig.3"><i class="fa fa-facebook"></i></a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div id="loggedin">
-          <div id="user-profile"></div>
-        </div>
-        <div id="user-playlist"></div>
-        <div id="Ebuttons">
-          <div class="three_buttons">
-            <h2 style="font-size:25px" >Please specify:</h2>
-            <button type="button" class="btn btn-outline-light btn-sm" onclick="showFavorite(0)">most recent</button>
-            <button type="button" class="btn btn-outline-light btn-sm" onclick="showFavorite(1)">somewhat recent</button>
-            <button type="button" class="btn btn-outline-light btn-sm" onclick="showFavorite(2)">least recent</button>
+
+        <div id="content">
+          <div id="loggedin">
+            <div id="user-profile"></div>
           </div>
-        </div>
-        <div id="user-artists"></div>
-        <div id="generate_btn">
-          <div class="generate_btn">
-            <button class="btn btn-outline-light" onclick="youtube()"><b>Generate!<b></button>
+          <div id="user-playlist"></div>
+          <div id="Ebuttons">
+            <div class="three_buttons">
+              <h2 style="font-size:25px" >Please specify:</h2>
+              <button type="button" class="btn btn-outline-light btn-sm" onclick="showFavorite(0)">most recent</button>
+              <button type="button" class="btn btn-outline-light btn-sm" onclick="showFavorite(1)">somewhat recent</button>
+              <button type="button" class="btn btn-outline-light btn-sm" onclick="showFavorite(2)">least recent</button>
+            </div>
           </div>
+          <div id="user-artists"></div>
+          <div id="generate_btn">
+            <div class="generate_btn">
+              <button class="btn btn-outline-light" onclick="youtube()"><b>Generate!<b></button>
+            </div>
+          </div>
+          <div id="YTresults">
+            <div class="YTresults"></div>
+          </div>
+          <button onclick="topFunction()" class="btn btn-outline-light btn-sm" id="myBtn" title="Go to top">Top</button>
         </div>
-        <div id="YTresults">
-          <div class="YTresults"></div>
-        </div>
-        <button onclick="topFunction()" class="btn btn-outline-light btn-sm" id="myBtn" title="Go to top">Top</button>
+        <div style="bottom: 0px; text-align: center; position: fixed; overflow: hidden;">Spring 2018: CS411 Project</div>
       </div>
 
       <script id="user-profile-template" type="text/x-handlebars-template">
@@ -187,58 +253,6 @@
       </script>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
-    <div class="footer1">
-      <div>
-        <center><h1 style="font-size: 60px"><b>Developers</b></h1></center>
-      </div>
-      
-      <div class="card">
-        <img src="jill.jpg" alt="jill" style="width:100%">
-        <h1 style="color: black">Jill <br /> 
-        Hbh</h1>
-        <p class="title">Developer</p>
-        <p style="color: black">Boston University</p>
-        <div style="margin: 24px 0;">
-          <a href="https://www.linkedin.com/in/jillyan-huibonhoa-1952628a/"><i class="fa fa-linkedin"></i></a>
-          <a href="https://www.facebook.com/jillyan.hbh"><i class="fa fa-facebook"></i></a> 
-        </div>
-      </div>
-
-      <div class="card">
-        <img src="sarah.jpg" alt="sarah" style="width:100%">
-        <h1 style="color: black" style = "font-size: 9px">Sarah M'Saad</h1>
-        <p class="title">Developer</p>
-        <p style="color: black">Boston University</p>
-        <div style="margin: 24px 0;">
-          <a href="https://www.linkedin.com/in/sarah-msaad/"><i class="fa fa-linkedin"></i></a>
-          <a href="https://www.facebook.com/sarah.msaad.71"><i class="fa fa-facebook"></i></a> 
-        </div>
-      </div>
-
-      <div class="card">
-        <img src="nathan.jpg" alt="nathan" style="width:100%">
-        <h1 style="color: black">Nathan <br />
-        Wu</h1>
-        <p class="title">Developer</p>
-        <p style="color: black">Boston University</p>
-        <div style="margin: 24px 0;">
-          <a href="https://www.linkedin.com/in/nathanjwu/"><i class="fa fa-linkedin"></i></a>
-          <a href="https://www.facebook.com/search/top/?q=nathan%20wu"><i class="fa fa-facebook"></i></a> 
-        </div>
-      </div>
-
-      <div class="card">
-        <img src="jacob.jpg" alt="jacob" style="width:100%">
-        <h1 style="color: black">Jacob Zweig</h1>
-        <p class="title">Developer</p>
-        <p style="color: black">Boston University</p>
-        <div style="margin: 24px 0;">
-          <a href="https://www.linkedin.com/in/jacob-zweig-686331122/"><i class="fa fa-linkedin"></i></a>
-          <a href="https://www.facebook.com/jacob.zweig.3"><i class="fa fa-facebook"></i></a> 
-        </div>
-      </div>
-      <h3 style="text-align: center;">Spring 2018: CS411 Project</h3>
-    </div>
 
     <script>
       // function that runs at start up of web page
