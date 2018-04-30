@@ -1,7 +1,7 @@
 
 @import url('https://fonts.googleapis.com/css?family=Gugi');
 
-#login, #loggedin {
+#login, #content2, #loggedin {
   display: none;
 }
 
@@ -17,6 +17,15 @@ body{
   margin-top: 15% !important;
   width: 80% !important;
 }
+
+#content2 {
+  height:100% !important;
+  min-height:100% !important;/*for mozilla*/
+  margin: 5% auto !important;
+  margin-top: 15% !important;
+  width: 80% !important;
+}
+
 
 #particles-js{
   position: absolute;

@@ -180,7 +180,7 @@
           </div>
         </div>
 
-        <div id="content">
+        <div id="content2">
           <div id="loggedin">
             <div id="user-profile"></div>
           </div>
@@ -299,6 +299,7 @@
                   userProfilePlaceholder.innerHTML = userProfileTemplate(response.body);
                   $('#login').hide();
                   $('#loggedin').show();
+                  $('#content2').show();
                   // $("#user-playlist").hide();
                   // $('#user-artists').hide();
                 }
