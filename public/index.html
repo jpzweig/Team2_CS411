@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <title>free concert vibes only</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body>
     <!-- background stuff -->
@@ -107,7 +108,11 @@
 
       <div class="body-login">
         <div id="login">
-          <h1>Please login to your spotify account to start</h1>
+          <img src="spot_play.png" alt="play button" width="250" height="250">
+          <h1 style="font-size:80px"><b>Live concerts. Chosen from Spotify.<b></h1>
+          <br>
+          <h1 style="font-size:30px">Enjoy a live concert playlist from favorite artists on Spotify. No need to find specific preformances on YouTube. We'll handle everything for you. Click below to get started!</h1>
+          <br>
           <div class="padd">
             <a href="/login" class="btn btn-outline-light">Log in with Spotify</a>
           </div>
@@ -118,7 +123,7 @@
         <div id="user-playlist"></div>
         <div id="Ebuttons">
           <div class="three_buttons">
-            Choose one of these options:
+            <h2 style="font-size:25px" >Please specify:</h2>
             <button type="button" class="btn btn-outline-light btn-sm" onclick="showFavorite(0)">most recent</button>
             <button type="button" class="btn btn-outline-light btn-sm" onclick="showFavorite(1)">somehow recent</button>
             <button type="button" class="btn btn-outline-light btn-sm" onclick="showFavorite(2)">least recent</button>
@@ -127,7 +132,7 @@
         <div id="user-artists"></div>
         <div id="generate_btn">
           <div class="generate_btn">
-            <button class="btn btn-outline-light" onclick="youtube()">Generate!</button>
+            <button class="btn btn-outline-light" onclick="youtube()"><b>Generate!<b></button>
           </div>
         </div>
         <div id="YTresults">
@@ -137,15 +142,15 @@
       </div>
 
       <script id="user-profile-template" type="text/x-handlebars-template">
-        <h2>Welcome, {{id}}!</h2>
-        <h3>Choose one of the two options to generate a youtube playlist from:</h3>
-        <button class ="btn btn-outline-light" font-size: "18px" onclick="showButtons()" target="_blank">your most listened to artists</button>
-        <button class="btn btn-outline-light" onclick="showPlaylist()">your spotify playlist</button>
+        <h2 style="font-size:65px">Welcome, {{id}}!</h2>
+        <h3 style="font-size:35px">Choose a source for your playlist:</h3>
+        <button class ="btn btn-outline-light" font-size: "18px" onclick="showButtons()" target="_blank">Most listened to artists</button>
+        <button class="btn btn-outline-light" onclick="showPlaylist()">Spotify playlists</button>
       </script>
 
       <script id="user-playlist-template" type="text/x-handlebars-template">
         <div id="user-playlist">
-        <h1>Please select a playlist</h1>
+        <h1>Select a playlist</h1>
         <div class="all">
           {{#each items}}
           <div class="smh">
@@ -183,8 +188,58 @@
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
     <div class="footer1">
-      Spring 2018: CS411 Project
+      <div>
+        <center><h1 style="font-size: 60px"><b>Developers</b></h1></center>
+      </div>
+      
+      <div class="card">
+        <img src="jill.jpg" alt="jill" style="width:100%">
+        <h1 style="color: black">Jill <br /> 
+        Hbh</h1>
+        <p class="title">Developer</p>
+        <p style="color: black">Boston University</p>
+        <div style="margin: 24px 0;">
+          <a href="https://www.linkedin.com/in/jillyan-huibonhoa-1952628a/"><i class="fa fa-linkedin"></i></a>
+          <a href="https://www.facebook.com/jillyan.hbh"><i class="fa fa-facebook"></i></a> 
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="sarah.jpg" alt="sarah" style="width:100%">
+        <h1 style="color: black" style = "font-size: 9px">Sarah M'Saad</h1>
+        <p class="title">Developer</p>
+        <p style="color: black">Boston University</p>
+        <div style="margin: 24px 0;">
+          <a href="https://www.linkedin.com/in/sarah-msaad/"><i class="fa fa-linkedin"></i></a>
+          <a href="https://www.facebook.com/sarah.msaad.71"><i class="fa fa-facebook"></i></a> 
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="nathan.jpg" alt="nathan" style="width:100%">
+        <h1 style="color: black">Nathan <br />
+        Wu</h1>
+        <p class="title">Developer</p>
+        <p style="color: black">Boston University</p>
+        <div style="margin: 24px 0;">
+          <a href="https://www.linkedin.com/in/nathanjwu/"><i class="fa fa-linkedin"></i></a>
+          <a href="https://www.facebook.com/search/top/?q=nathan%20wu"><i class="fa fa-facebook"></i></a> 
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="jacob.jpg" alt="jacob" style="width:100%">
+        <h1 style="color: black">Jacob Zweig</h1>
+        <p class="title">Developer</p>
+        <p style="color: black">Boston University</p>
+        <div style="margin: 24px 0;">
+          <a href="https://www.linkedin.com/in/jacob-zweig-686331122/"><i class="fa fa-linkedin"></i></a>
+          <a href="https://www.facebook.com/jacob.zweig.3"><i class="fa fa-facebook"></i></a> 
+        </div>
+      </div>
+      <h3 style="text-align: center;">Spring 2018: CS411 Project</h3>
     </div>
+
     <script>
       // function that runs at start up of web page
       (function() {
