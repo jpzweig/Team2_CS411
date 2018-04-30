@@ -21,6 +21,7 @@ var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 let accessGlobal = "";
 var favoriteArtists = [];
 var artistPictures = [];
+var favArtTimeOpt = 0;
 
 var SpotifyWebApi = require('spotify-web-api-node');
 var me = {};
@@ -328,19 +329,19 @@ app.get('/playlists', function(req, res){
   });
 });
 
-// gets user's favorite Artists from Spotify
-app.get('/artists', function(req,res){
-  var items = [];
-  for (var i = 0; i < favoriteArtists.length; i++){
-    var data = { 'name': favoriteArtists[i], 'img': artistPictures[i]};
-    items.push(data);
-  }
-  // console.log(items);
-  res.send({
-    'items': items
-  });
-  //create a json from these inputs with items
-});
+// // gets user's favorite Artists from Spotify
+// app.get('/artists', function(req,res){
+//   var items = [];
+//   for (var i = 0; i < favoriteArtists.length; i++){
+//     var data = { 'name': favoriteArtists[i], 'img': artistPictures[i]};
+//     items.push(data);
+//   }
+//   // console.log(items);
+//   res.send({
+//     'items': items
+//   });
+//   //create a json from these inputs with items
+// });
 
 // Youtube API call
 var YTcall = function(artist) {
@@ -362,25 +363,37 @@ var YTcall = function(artist) {
   return vids;
 };
 
-// extract user's favorite artist from database
-// and do a youtube api call
+// extract user's favorite artists from database if
+// it's not over an hour old; do a Spotify api call if it is
 app.get('/youtube', function(req, res){
   var list = [];
   var vids = [];
-  MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
-    var dbo = db.db("411");
-    dbo.collection("Users").findOne({email: email}, function(err, result){
+  //var chkDB = function() {
+    MongoClient.connect(url, function(err, db) {
       if (err) throw err;
-      if (result == null){
-        console.log("coudn't find the logged in user's data");
-      }else{
-        vids = YTcall(result.address);
-      }
-      db.close();
+      var dbo = db.db("411");
+      dbo.collection("Users").findOne({email: email}, function(err, result){
+        if (err) throw err;
+        if (result == null){
+          console.log("coudn't find the logged in user's data");
+        }else if (Math.floor((Date.now() - result.accessed)/3600000) < 1){
+          console.log(Math.floor((Date.now() - result.accessed)/3600000));
+          console.log('getting favartist list from db');
+          vids = YTcall(result.address);
+        }
+        db.close();
+      });
     });
-  });
+//  };
+//  setTimeout(function(){chkDB()}, 1000);
+
+  if (vids === null) {
+    console.log('outdated favartist list in db');
+    vids = cacheArtists(favArtTimeOpt);
+  }
+  console.log(vids);
   var send = function(){
+    console.log(vids);
     res.send({
       'ids': vids
     });
@@ -388,12 +401,13 @@ app.get('/youtube', function(req, res){
   setTimeout(function(){send()}, 1000);
 });
 
-// get user's favoirte artists from different time periods
-app.get('/differentArtist', function(req, res){
-
+// Cache function--called if the list of favorite
+// artists in the database is outdated and/or to
+// update the database
+var cacheArtists = function(num) {
   var time_range = ['short_term','medium_term','long_term'];
   var options = {
-    url: 'https://api.spotify.com/v1/me/top/artists?time_range='+time_range[req.query.range],
+    url: 'https://api.spotify.com/v1/me/top/artists?time_range='+time_range[num],
     headers: { 'Authorization': 'Bearer ' + accessGlobal },
     json: true
   };
@@ -413,7 +427,7 @@ app.get('/differentArtist', function(req, res){
       MongoClient.connect(url, function(err, db) {
         if (err) throw err;
         var dbo = db.db("411");
-        dbo.collection("Users").findOneAndUpdate({email: email}, {$set: {address: favoriteArtists}});
+        dbo.collection("Users").findOneAndUpdate({email: email}, {$set: {address: favoriteArtists, accessed: Date.now()}});
       });
     };
     setTimeout(function(){run()}, 500);
@@ -424,6 +438,13 @@ app.get('/differentArtist', function(req, res){
     }
 
   });
+  return items;
+};
+
+// get user's favoirte artists from different time periods
+app.get('/differentArtist', function(req, res){
+  favArtTimeOpt = req.query.range;
+  var items = cacheArtists(favArtTimeOpt);
 
   setTimeout(function(){
     res.send({
