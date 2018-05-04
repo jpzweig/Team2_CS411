@@ -1,12 +1,12 @@
-Story 1: Generate Playlist via Spotify PLaylist
+Story 1: Generate Youtube Playlist via Spotify PLaylist
   Background:
-  - I want to make a playlist on YouTube based on songs that I put in a playlist on Spotify so that I can see live performances. Thankfully, Spotify stores your playlists and allows access to them via the API call.
+  - I want to show a list of Youtube live concert videos based on songs that I put in a playlist on Spotify so that I can see live performances. Thankfully, Spotify stores your playlists and allows access to them via the API call.
   Log In:
   - I first must log in by authenticating my Spotify profile, which will be requested right when I access the web application.
   Playlist Generate:
-  - After I authenticate through Spotify, the back end will get to work by pulling/displaying playlists on Spotify and then using the songs and artists in the playlists to pull live performances from YouTube.
+  - After I authenticate through Spotify, the back end will get to work by pulling/displaying playlists on Spotify and then using the artists in the playlists to pull live performances from YouTube.
   Results:
-  - The playlist will then be displayed for the user in the page below.
+  - The playlist will then be displayed for the user in our web page.
   
 
 
