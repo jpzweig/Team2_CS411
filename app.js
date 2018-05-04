@@ -9,32 +9,29 @@ var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var config = require('config');
-var email = null;
 var search = require('youtube-search');
 var path = require('path');
-var mongo = require('mongodb');
+var MongoClient = require('mongodb').MongoClient;
+var SpotifyWebApi = require('spotify-web-api-node');
 
 var client_id = config.get('client_id'); // Your client id
 var client_secret = config.get('client_secret'); // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
-
+var email = null;
 let accessGlobal = "";
 var favoriteArtists = [];
 var artistPictures = [];
 var favArtTimeOpt = 0;
-
-var SpotifyWebApi = require('spotify-web-api-node');
 var me = {};
 var stateKey = 'spotify_auth_state';
 
-// credentials are optional
+// Spotify Wrapper settings
 var spotifyApi = new SpotifyWebApi({
   clientId : client_id ,
   clientSecret : client_secret,
   redirectUri : redirect_uri
 });
 
-var MongoClient = require('mongodb').MongoClient;
 var url = config.get('mongo_add');
 
 /**
@@ -52,6 +49,7 @@ var generateRandomString = function(length) {
   return text;
 };
 
+//setting up express
 var app = express();
 
 app.use(express.static(__dirname + '/public'))
@@ -85,7 +83,6 @@ app.get('/info', function(req,res){
   };
 
   request.get(options, function(error, response, body) {
-    //console.log(response);
     if (!error && response.statusCode === 200) {
       res.send({
         'body': body
@@ -190,7 +187,7 @@ app.get('/callback', function(req, res) {
                 }
               });
             }
-          setTimeout(function(){insertUpdate()}, 500);
+          insertUpdate();
         });
       });
 
@@ -210,29 +207,6 @@ app.get('/callback', function(req, res) {
   }
 });
 
-// //has q as param req aka req.query.q
-// app.get('/search', function(req, res) {
-//     //setting up the search parameters
-//     var options = {
-//       url: 'https://api.spotify.com/v1/search?type=track&q=' + req.query.q +'&limit=5',
-//       headers: { 'Authorization': 'Bearer ' + accessGlobal },
-//       json: true
-//     };
-//     //here is where the search request is made
-//     request.get(options, function(error, response, body) {
-//       //console.log(response);
-//       if (!error && response.statusCode === 200) {
-//         res.send({
-//           'body': body
-//         });
-//       }else{
-//         res.send({
-//           'body': 'something went wrong'
-//         });
-//       }
-//     });
-// });
-
 // Sort artist array based on the number of times they appear in
 // the playlist (descending order)
 var sortArray = function (keyval) {
@@ -248,13 +222,7 @@ var sortArray = function (keyval) {
 	  return a[1]-b[1]; // compare numbers
 	});
 
-  console.log("sortable before reverse", sortable);
-
   sortable.reverse();
-
-  console.log("sortable after reverse", sortable);
-
-  console.log("sample object key", sortable[0][0]);
 
   var counter = sortable.length;
   if (sortable.length > 20) {
@@ -265,9 +233,6 @@ var sortArray = function (keyval) {
       array.push(sortable[i][0]);
     }
   }
-
-  console.log("length of array from sortable", array.length);
-  console.log("array from sortable", array);
 
 	return array;
 }
@@ -293,12 +258,9 @@ app.get('/playlistId', function(req, res) {
         });
         artistlist = sortArray (artists);
         vids = YTcall(artistlist);
-        var send = function(){
-          res.send({
-            'ids': vids
-          });
-        };
-        setTimeout(function(){send()}, 1000);
+        res.send({
+          'ids': vids
+        });
       }else{
         res.send({
           'body': 'something went wrong'
@@ -328,20 +290,6 @@ app.get('/playlists', function(req, res){
     }
   });
 });
-
-// // gets user's favorite Artists from Spotify
-// app.get('/artists', function(req,res){
-//   var items = [];
-//   for (var i = 0; i < favoriteArtists.length; i++){
-//     var data = { 'name': favoriteArtists[i], 'img': artistPictures[i]};
-//     items.push(data);
-//   }
-//   // console.log(items);
-//   res.send({
-//     'items': items
-//   });
-//   //create a json from these inputs with items
-// });
 
 // Youtube API call
 var YTcall = function(artist) {
@@ -384,21 +332,14 @@ app.get('/youtube', function(req, res){
         db.close();
       });
     });
-//  };
-//  setTimeout(function(){chkDB()}, 1000);
 
   if (vids === null) {
     console.log('outdated favartist list in db');
     vids = cacheArtists(favArtTimeOpt);
   }
-  console.log(vids);
-  var send = function(){
-    console.log(vids);
-    res.send({
-      'ids': vids
-    });
-  };
-  setTimeout(function(){send()}, 1000);
+  res.send({
+    'ids': vids
+  });
 });
 
 // Cache function--called if the list of favorite
@@ -423,14 +364,11 @@ var cacheArtists = function(num) {
       favoriteArtists.push(arr["name"]);
     });
 
-    var run = function(){
-      MongoClient.connect(url, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("411");
-        dbo.collection("Users").findOneAndUpdate({email: email}, {$set: {address: favoriteArtists, accessed: Date.now()}});
-      });
-    };
-    setTimeout(function(){run()}, 500);
+    MongoClient.connect(url, function(err, db) {
+      if (err) throw err;
+      var dbo = db.db("411");
+      dbo.collection("Users").findOneAndUpdate({email: email}, {$set: {address: favoriteArtists, accessed: Date.now()}});
+    });
 
     for (var i = 0; i < favoriteArtists.length; i++){
       var data = { 'name': favoriteArtists[i], 'img': artistPictures[i]};
@@ -445,19 +383,10 @@ var cacheArtists = function(num) {
 app.get('/differentArtist', function(req, res){
   favArtTimeOpt = req.query.range;
   var items = cacheArtists(favArtTimeOpt);
-
-  setTimeout(function(){
-    res.send({
-      'items': items
-    });
-  }, 500);
-
+  res.send({
+    'items': items
+  });
 });
-
-// app.get("/yt", (req, res) => {
-//   // console.log("HERESS:");
-//   res.sendfile('public/youtube.html', {hello:"HELLO"});
-// });
 
 app.get('/', function (req, res) {
   res.render('home', {title: "asdfasdfasdf"});

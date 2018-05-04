@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css?family=Gugi');
+@import url('https://fonts.googleapis.com/css?family=Abel');
 
 #login, #content2, #loggedin {
   display: none;
@@ -12,15 +12,16 @@ body{
 
 #content {
   height:100% !important;
-  min-height:100% !important;/*for mozilla*/
+  min-height:100% !important;
   margin: 5% auto !important;
   margin-top: 15% !important;
   width: 80% !important;
 }
 
+/* same as #content but this div is display: none at first */
 #content2 {
   height:100% !important;
-  min-height:100% !important;/*for mozilla*/
+  min-height:100% !important;
   margin: 5% auto !important;
   margin-top: 15% !important;
   width: 80% !important;
@@ -39,6 +40,7 @@ body{
 }
 
 html,body {
+  font-family: 'Abel', sans-serif;
   height:100% !important;
   margin:0 !important;
   font: white !important;
