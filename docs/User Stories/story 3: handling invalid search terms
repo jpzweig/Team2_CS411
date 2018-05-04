@@ -1,11 +1,6 @@
-Story 3: handling invalid search terms
-As a user, I want to receive alternative suggestions for a search term that is spelt wrongly, or doesn't exist, or doesn't return any results. This is so that I know what went wrong if I don't get the results I'm looking for. 
+Story 3: Generating YouTube playlist if the artists have no live videos uploaded.
 
-1) Misspelt place/city name
-	- Return a list of location/city names closest to the search term
-2) Search term does not exist as a name of a place/city in the world
-	- Return a list of location/city names closest to the search term; OR 
-	- Return "No such place exists, please enter a valid location." 
-3) None of the user's followers or followees have been to the place being searched
-	- Return "No one you follow/who follows you have been to the place you specified, but you may want to check out the following photos and hashtags related to your destination!"; AND
-	- Return a page of public photos with the location tag of the search term, and a list of hashtags that either most frequently show up in these pictures, or often co-occur with the hashtag of the search term. 
+1) Generate a playlist using a Spotify playlis
+	- Return a list of top-viewed matches which will be generate from the artist name + live + performance.
+	- If the artist does not have live videos, the top video will still be pulled from this criteria
+	- This happens because we are unable to know if the artist being showed in the YouTube embedded video is actually who they say they are.
