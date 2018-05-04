@@ -1,6 +1,6 @@
-Story 2: Getting Related Youtube Playlist from your Favorite Artists
-- After loggin in and pulling your information.
--You pick either to choose to generate a playlist from your favorite artists (most listened to) or from your spotify playlists
+Story 2: Getting Related Youtube Playlist from your Spotify Favorite Artists/Playlists
+- After logging in and pulling your information.
+-You pick either to choose to generate a Youtube playlist from your Spotify favorite artists (most listened to) or from your spotify playlists
 -If you pick favorite artists: you can choose one of three options: most recent, somewhat recent, all time. 
     - as you click one of these options, back-end gets notified of the correct array to pick from.
     - a response is returned with your favorite artist name and their pictures to populate on front-end.
