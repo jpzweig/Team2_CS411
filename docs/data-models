@@ -4,9 +4,7 @@ Our mongoDB Schema:
   email: String,
   address: Array,
   accessToken: String,
-  accessed: Integer,
-  videos: Array,
-  usedFav: Boolean
+  accessed: Integer
 }
 
 The required fields are email and address (favorite artists) and accessToken.
