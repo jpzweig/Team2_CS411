@@ -1,0 +1,15 @@
+Story 3: handling exceptions
+
+1) Limiting the Youtube playlist to at most 20 videos: 
+For the user's favorite artists, we always fetch the top 20 (no matter which time period the user specifies), to generate at most 20 Youtube videos (1 for each artist). However, if the user chooses a favorite Spotify playlist to generate the list of Youtube concert videos from, there could be much more than 20 artists in the playlist. We want to limit our list of Youtube videos to 20, to handle this situation, we: 
+	- Sort the artists in the selected Spotify playlist by the number of songs they are featured in the playlist (in descending order)
+	- We choose the top 20 artists in this sorted list and send that information to the Youtube API to generate the list of Youtube videos. 
+
+2) If the artist does not have live videos, the top video will still be used for the Youtube playlist: 
+- To generate the Youtube videos, we search Youtube using the artist's name + "live concert". We return the first video from each search. 
+- We are not responsible for whether the top video of the search result is an actual live concert of the named artist (e.g. the artist might not have a live concert video on Youtube, and the returned video could be one of their music videos instead).
+- So, in this respect, we take a best-effort approach to generating the Youtube playlist, which generally is good enough (i.e. most of the time, it does return the live concert videos of the named artist). 
+
+
+
+

@@ -1,6 +1,0 @@
-Story 3: Generating YouTube playlist if the artists have no live videos uploaded.
-
-1) Generate a playlist using a Spotify playlis
-	- Return a list of top-viewed matches which will be generate from the artist name + live + performance.
-	- If the artist does not have live videos, the top video will still be pulled from this criteria
-	- This happens because we are unable to know if the artist being showed in the YouTube embedded video is actually who they say they are.
